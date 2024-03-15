@@ -1,6 +1,8 @@
-import './App.css';
+import './index.css';
+import ProducerInfo from '../src/Components/ProducerInfo';
 
 function App() {
+  console.log(`here?`);
   return (
     <div className="App">
       <header className="App-header">
@@ -16,6 +18,7 @@ function App() {
           Learn React
         </a>
       </header>
+      <ProducerInfo />
     </div>
   );
 }
