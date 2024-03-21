@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { IoClose } from "react-icons/io5";
+import { GrClose } from "react-icons/gr";
 
 const ProducerInfo = () => {
   const [display, setDisplay] = useState(false);
@@ -21,14 +21,14 @@ const ProducerInfo = () => {
           <Div>
             <div>
               <p>맛 :지도</p>
-              <button
-                onClick={() => {
-                  setDisplay(!display);
-                }}
-              >
-                <IoClose />
-              </button>
             </div>
+            <button
+              onClick={() => {
+                setDisplay(!display);
+              }}
+            >
+              <GrClose />
+            </button>
           </Div>
           <h2>
             전국 곳곳의 숨은 맛집을
@@ -67,7 +67,7 @@ const StyledButton = styled.button`
   position: relative;
   font-weight: 700;
   font-size: 15px;
-  margin: 0 30px;
+  margin: 0 50px;
   background-color: #f4e384;
   padding: 20px 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -92,7 +92,7 @@ const InfoDiv = styled.div`
 
   position: fixed;
   bottom: 1.875em;
-  right: 2.1875em;
+  left: 2.1875em;
 
   background-color: #efe4a2;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
@@ -155,8 +155,41 @@ const Div = styled.div`
       font-family: Stylish;
     }
   }
+
+  button {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    margin-top: 20px;
+    right: 2em;
+    background: transparent;
+    border: none;
+
+    :hover {
+        cursor: pointer;
+      }
 `;
 
 const LinkTag = styled.a`
   display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 334px;
+  height: 80px;
+  margin-bottom: 30px;
+
+  font-family: Poor Story;
+  font-size: 20px;
+  font-weight: 700;
+  text-decoration-line: none;
+  color: #222;
+
+  background: #f7f7f7;
+  border-line: none;
+  border-radius: 30px;
+
+  &:hover {
+    cursor: pointer;
+    background: #e0d373;
+  }
 `;

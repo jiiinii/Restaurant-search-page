@@ -2,15 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
 import ProducerInfo from "../Components/ProducerInfo";
+import RecentSearchHistory from "./RecentSearchHistory";
 
 const Home = () => {
   return (
     <>
       <Fixation>
+        <Lump>
         <header>
           <h1>
             맛 :지도
-            <img className = "logo" src="../img/logo.png" alt="logo" />
+            <img className="logo" src="../img/logo.png" alt="logo" />
           </h1>
           <ul>
             <Nav variant="tabs" defaultActiveKey="/">
@@ -18,14 +20,20 @@ const Home = () => {
                 <Nav.Link href="/">홈</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="link-1">맛집 찾기</Nav.Link>
+                <Nav.Link href="/search">맛집 찾기</Nav.Link>
               </Nav.Item>
             </Nav>
           </ul>
         </header>
         <main>
-          <img className = "substitute" src="../img/substitute.png" alt="substitute" />
+          <img
+            className="substitute"
+            src="../img/substitute.png"
+            alt="substitute"
+          />
         </main>
+        </Lump>
+      <RecentSearchHistory />
       </Fixation>
       <ProducerInfo />
     </>
@@ -35,7 +43,7 @@ const Home = () => {
 export default Home;
 
 const Fixation = styled.div`
-  width: 1200px;
+  width: 1300px;
   margin: 40px auto;
 
   header {
@@ -51,15 +59,27 @@ const Fixation = styled.div`
   }
 
   .logo {
-    width: 40px;
-    height: 35px;
+    width: 50px;
+    height: 50px;
   }
 
   .substitute {
-    width: 1200px
+    width: 1300px;
   }
 
   main {
     margin: 0px auto;
   }
 `;
+
+const Lump = styled.div`
+  display: block;
+
+  img {
+    border-radius: 10px;
+  }
+
+  ul {
+    margin: 10px 20px 10px;
+  }
+`
