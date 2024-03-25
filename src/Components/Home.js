@@ -2,14 +2,29 @@ import React from "react";
 import styled from "styled-components";
 import ProducerInfo from "../Components/ProducerInfo";
 import RecentSearchHistory from "./RecentSearchHistory";
-import HomeHeader from "../Components/HomeHeader";
+import Nav from "react-bootstrap/Nav";
 
 const Home = () => {
   return (
     <>
       <Fixation>
         <Lump>
-          <HomeHeader />
+          <header>
+          <h1>
+            맛 :지도
+            <img className="logo" src="../img/logo.png" alt="logo" />
+          </h1>
+          <ul>
+            <Nav variant="tabs" defaultActiveKey="/">
+              <Nav.Item>
+                <Nav.Link href="/">홈</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link href="/search">맛집 찾기</Nav.Link>
+              </Nav.Item>
+            </Nav>
+          </ul>
+        </header>
           <main>
             <div>
               <img src="../img/mainPhoto.png" alt="representative" />
@@ -44,10 +59,6 @@ const Fixation = styled.div`
   .logo {
     width: 50px;
     height: 50px;
-  }
-
-  .substitute {
-    width: 1300px;
   }
 `;
 
