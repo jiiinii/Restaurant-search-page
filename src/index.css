@@ -1,6 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Stylish&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Gaegu&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poor+Story&display=swap');
 html,
 body,
 div,
@@ -206,19 +204,4 @@ code {
     src: url('https://fonts.googleapis.com/css2?family=Stylish&display=swap" rel="stylesheet');
     font-weight: 400;
     font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Gaegu", sans-serif;
-    src: url('https://fonts.googleapis.com/css2?family=Gaegu&display=swap" rel="stylesheet');
-    font-weight: 400;
-    font-style: normal;
-  }
-
-  @font-face {
-      font-family: "Poor Story", system-ui;
-      src: url('https://fonts.googleapis.com/css2?family=Poor+Story&display=swap" rel="stylesheet');
-      font-weight: 400;
-      font-style: normal;
-    
   }

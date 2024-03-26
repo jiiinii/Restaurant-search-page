@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import ProducerInfo from "../Components/ProducerInfo";
+import ProducerInfo from "./ProducerInfo";
 import RecentSearchHistory from "./RecentSearchHistory";
 import Nav from "react-bootstrap/Nav";
 
@@ -46,7 +46,7 @@ const Fixation = styled.div`
 
   header {
     display: flex;
-    margin: 0px auto 20px;
+    margin: 0px auto 30px;
   }
 
   h1 {

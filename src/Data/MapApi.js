@@ -1,18 +1,18 @@
 import React from "react";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
+import UseKakaoLoader from "./useKakaoLoader";
 
-const MapApi = () => {
-    return (
-        <Map
-          center={{ lat: 33.5563, lng: 126.79581 }}
-          style={{ width: "600px", height: "600px" }}
-          level={3}
-        >
-          <MapMarker position={{ lat: 33.55635, lng: 126.795841 }}>
-            <div style={{color:"#000"}}>Hello World!</div>
-          </MapMarker>
-        </Map>
-      )
-};
+export default function BasicMap() {
+  UseKakaoLoader();
 
-export default MapApi;
+  return (
+    <Map
+      center={{ lat: 37.5724321, lng: 126.976902 }}
+      style={{ width: "650px", height: "650px", borderRadius: "10px" }}
+      level={3}
+    >
+      <MapMarker position={{ lat: 37.5724321, lng: 126.976902 }}> </MapMarker>
+      <ZoomControl/>
+    </Map>
+  );
+}

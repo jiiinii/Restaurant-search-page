@@ -33,21 +33,21 @@ const ProducerInfo = () => {
           <h2>
             전국 곳곳의 숨은 맛집을
             <br />
-            '맛 :지도'를 통해서 알아보세요😊
+            맛 :지도 를 통해서 알아보세요😊
           </h2>
           <LinkTag
             href="https://github.com/jiiinii"
             target="_blank"
             rel="noreferrer"
           >
-            '맛 :지도' 개발자 github
+            맛 :지도 개발자 github
           </LinkTag>
           <LinkTag
             href="https://www.instagram.com/_doom_chit?igsh=YnNuNHo4aXdxZXR6&utm_source=qr"
             target="_blank"
             rel="noreferrer"
           >
-            '맛 :지도' 개발자 instagram
+            맛 :지도 개발자 instagram
           </LinkTag>
         </InfoDiv>
       )}
@@ -124,8 +124,8 @@ const InfoDiv = styled.div`
 
   h2 {
     margin: 0 73px 30px 54px;
-    font-family: Gaegu;
-    font-size: 25px;
+    font-weight: 600;
+    font-size: 20px;
     color: #222;
   }
 `;
@@ -178,8 +178,7 @@ const LinkTag = styled.a`
   height: 80px;
   margin-bottom: 30px;
 
-  font-family: Poor Story;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   text-decoration-line: none;
   color: #222;

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
-import MapApi from "../Data/MapApi";
+import MapApi from "../data/mapApi";
 
 const eaterySearch = () => {
   return (
@@ -25,7 +25,9 @@ const eaterySearch = () => {
             </ul>
           </header>
         </Lump>
-        <MapApi />
+        <SearchForInformation>
+          <MapApi />
+        </SearchForInformation>
       </Fixation>
     </>
   );
@@ -66,3 +68,8 @@ const Lump = styled.div`
     margin: 10px 20px 10px;
   }
 `;
+
+const SearchForInformation = styled.div`
+  display: block;
+  float: left
+`

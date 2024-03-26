@@ -32,8 +32,8 @@ const PlaceList = styled.div`
     margin: auto 10px;
 
     color: #222;
-    font-family: Gaegu;
-    font-size: 30px;
+    font-weight: 600;
+    font-size: 25px;
   }
 `;
 
