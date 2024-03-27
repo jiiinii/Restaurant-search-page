@@ -11,7 +11,7 @@ export default function BasicMap() {
       style={{ width: "650px", height: "650px", borderRadius: "10px" }}
       level={3}
     >
-      <MapMarker position={{ lat: 37.5724321, lng: 126.976902 }}> </MapMarker>
+      <MapMarker position={{ lat: 37.5724321, lng: 126.976902 }}></MapMarker>
       <ZoomControl/>
     </Map>
   );
