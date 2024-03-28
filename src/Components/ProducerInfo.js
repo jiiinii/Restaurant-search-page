@@ -67,7 +67,8 @@ const StyledButton = styled.button`
   position: relative;
   font-weight: 700;
   font-size: 15px;
-  margin: 0 50px;
+  margin-left: 80px;
+  margin-bottom: 30px;
   background-color: #f4e384;
   padding: 20px 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
