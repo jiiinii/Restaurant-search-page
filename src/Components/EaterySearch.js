@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
 import MapApi from "../data/mapApi";
 import ProducerInfo from "./ProducerInfo";
-import SearchUI from "../search/searchUI";
+// import SearchUI from "../search/searchUI";
 
 const eaterySearch = () => {
   return (
@@ -28,7 +28,7 @@ const eaterySearch = () => {
           </header>
         </Lump>
         <SearchForInformation>
-          <SearchUI />
+          {/* <SearchUI /> */}
           <MapApi />
         </SearchForInformation>
       </Fixation>
