@@ -3,13 +3,68 @@ import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import UseKakaoLoader from "./useKakaoLoader";
 import styled from "styled-components";
 
+const { kakao } = window;
+
 export default function BasicMap() {
   UseKakaoLoader();
 
-  const submitHandler = (e) => {
+  // const [info, setInfo] = useState()
+  // const [markers, setMarkers] = useState([])
+  const [map] = useState()
+
+  // 입력 폼 변화 감지하여 입력 값 관리
+  const [Value, setValue] = useState("");
+
+  const keywordChange = (e) => {
     e.preventDefault();
-    console.log(`123`);
-  };
+    setValue(e.target.value);
+  }
+
+  const submitKeyword = (e) => {
+    e.preventDefault();
+    // setKeyword(Value);
+  }
+
+  const valueChecker = () => {
+    if (Value === "") {
+      alert ("검색어를 입력해주세요.")
+    } else {
+      console.log(`검색어 >>> ` + Value);
+
+      // useEffect(() => {
+        // if (!map) return
+        const ps = new kakao.maps.services.Places()
+        console.log(`ddddddddddddddddddd`);
+        ps.keywordSearch(Value, (data, status, _pagination) => {
+          console.log(`지도 내 키워드 >>> ` + Value);
+          if (status === kakao.maps.services.Status.OK) {
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+            // LatLngBounds 객체에 좌표를 추가합니다
+            const bounds = new kakao.maps.LatLngBounds()
+            let markers = []
+    
+            for (var i = 0; i < data.length; i++) {
+              // @ts-ignore
+              markers.push({
+                position: {
+                  lat: data[i].y,
+                  lng: data[i].x,
+                },
+                content: data[i].place_name,
+              })
+              // @ts-ignore
+              bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
+            }
+            // setMarkers(markers)
+    
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+            map.setBounds(bounds)
+          }
+        })
+      // }, [map])
+
+    }
+  }
 
   // 현재 위치 추적
   const [state, setState] = useState({
@@ -23,6 +78,9 @@ export default function BasicMap() {
   });
 
   useEffect(() => {
+    const container = document.getElementById('myMap');
+    console.log(`container >>> ` + container);
+
     if (navigator.geolocation) {
       // GeoLocation을 이용해서 접속 위치를 얻어옴
       navigator.geolocation.getCurrentPosition(
@@ -57,18 +115,25 @@ export default function BasicMap() {
   return (
     <>
       <Fixation>
-        <SearchForm method="post" onSubmit={submitHandler}>
+        <SearchForm method="post" onSubmit={ submitKeyword }>
           <input
             className="search-entry"
+            onChange={ keywordChange }
             placeholder="검색어를 입력해 주세요."
             type="text"
           ></input>
           <div>
-            <button className="btn">Search</button>
+            <button className="btn" onClick={ valueChecker }>Search</button>
           </div>
         </SearchForm>
-        <SearchResult></SearchResult>
+        <div className="element">
+        <SearchResult>
+        <ul id="places-list">
+        </ul>
+        </SearchResult>
+        </div>
       </Fixation>
+      <div className="myMap">
       <Map
         center={state.center}
         style={{ width: "758px", height: "650px", borderRadius: "10px" }}
@@ -77,6 +142,7 @@ export default function BasicMap() {
         {!state.isLoading && <MapMarker position={state.center}></MapMarker>}
         <ZoomControl />
       </Map>
+      </div>
     </>
   );
 }
@@ -130,4 +196,5 @@ const SearchResult = styled.div`
   border: 2px solid #545454;
   border-radius: 8px;
   overflow: auto;
+  padding: 20px;
 `;
