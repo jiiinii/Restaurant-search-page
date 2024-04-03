@@ -5,7 +5,6 @@ import EaterySearch from './components/EaterySearch';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
-  console.log(`here?`);
   return (
     <BrowserRouter>
       <Routes>

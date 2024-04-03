@@ -3,18 +3,17 @@ import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import UseKakaoLoader from "./useKakaoLoader";
 import styled from "styled-components";
 
-const { kakao } = window;
-
 export default function BasicMap() {
   UseKakaoLoader();
 
-  // const [info, setInfo] = useState()
-  // const [markers, setMarkers] = useState([])
-  const [map] = useState()
-
+  const { kakao } = window;
+  const [info, setInfo] = useState()
+  const [markers, setMarkers] = useState([])
+  const [map, setMap] = useState()
   // 입력 폼 변화 감지하여 입력 값 관리
   const [Value, setValue] = useState("");
 
+  // 검색 기능
   const keywordChange = (e) => {
     e.preventDefault();
     setValue(e.target.value);
@@ -22,47 +21,41 @@ export default function BasicMap() {
 
   const submitKeyword = (e) => {
     e.preventDefault();
-    // setKeyword(Value);
   }
 
   const valueChecker = () => {
     if (Value === "") {
       alert ("검색어를 입력해주세요.")
     } else {
-      console.log(`검색어 >>> ` + Value);
+      if (!map) return
+    const ps = new kakao.maps.services.Places()
 
-      // useEffect(() => {
-        // if (!map) return
-        const ps = new kakao.maps.services.Places()
-        console.log(`ddddddddddddddddddd`);
-        ps.keywordSearch(Value, (data, status, _pagination) => {
-          console.log(`지도 내 키워드 >>> ` + Value);
-          if (status === kakao.maps.services.Status.OK) {
-            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-            // LatLngBounds 객체에 좌표를 추가합니다
-            const bounds = new kakao.maps.LatLngBounds()
-            let markers = []
-    
-            for (var i = 0; i < data.length; i++) {
-              // @ts-ignore
-              markers.push({
-                position: {
-                  lat: data[i].y,
-                  lng: data[i].x,
-                },
-                content: data[i].place_name,
-              })
-              // @ts-ignore
-              bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
-            }
-            // setMarkers(markers)
-    
-            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-            map.setBounds(bounds)
-          }
-        })
-      // }, [map])
+    ps.keywordSearch(Value, (data, status) => {
+      console.log("data >>>> ", data);
+      if (status === kakao.maps.services.Status.OK) {
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+        // LatLngBounds 객체에 좌표를 추가합니다
+        const bounds = new kakao.maps.LatLngBounds()
+        let markers = []
 
+        for (var i = 0; i < data.length; i++) {
+          // @ts-ignore
+          markers.push({
+            position: {
+              lat: data[i].y,
+              lng: data[i].x,
+            },
+            content: data[i].place_name,
+          })
+          // @ts-ignore
+          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
+        }
+        setMarkers(markers)
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        map.setBounds(bounds)
+      }
+    })
     }
   }
 
@@ -78,8 +71,6 @@ export default function BasicMap() {
   });
 
   useEffect(() => {
-    const container = document.getElementById('myMap');
-    console.log(`container >>> ` + container);
 
     if (navigator.geolocation) {
       // GeoLocation을 이용해서 접속 위치를 얻어옴
@@ -138,7 +129,19 @@ export default function BasicMap() {
         center={state.center}
         style={{ width: "758px", height: "650px", borderRadius: "10px" }}
         level={3}
+        onCreate={setMap}
       >
+        {markers.map((marker) => (
+        <MapMarker
+          key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+          position={marker.position}
+          onClick={() => setInfo(marker)}
+        >
+          {info &&info.content === marker.content && (
+            <div style={{color:"#000"}}>{marker.content}</div>
+          )}
+        </MapMarker>
+      ))}
         {!state.isLoading && <MapMarker position={state.center}></MapMarker>}
         <ZoomControl />
       </Map>
