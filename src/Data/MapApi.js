@@ -7,9 +7,9 @@ export default function BasicMap() {
   UseKakaoLoader();
 
   const { kakao } = window;
-  const [info, setInfo] = useState()
-  const [markers, setMarkers] = useState([])
-  const [map, setMap] = useState()
+  const [info, setInfo] = useState();
+  const [markers, setMarkers] = useState([]);
+  const [map, setMap] = useState();
   // 입력 폼 변화 감지하여 입력 값 관리
   const [Value, setValue] = useState("");
 
@@ -17,47 +17,58 @@ export default function BasicMap() {
   const keywordChange = (e) => {
     e.preventDefault();
     setValue(e.target.value);
-  }
+  };
 
   const submitKeyword = (e) => {
     e.preventDefault();
-  }
+  };
 
   const valueChecker = () => {
     if (Value === "") {
-      alert ("검색어를 입력해주세요.")
+      alert("검색어를 입력해주세요.");
     } else {
-      if (!map) return
-    const ps = new kakao.maps.services.Places()
+      if (!map) return;
+      const ps = new kakao.maps.services.Places();
 
-    ps.keywordSearch(Value, (data, status) => {
-      console.log("data >>>> ", data);
-      if (status === kakao.maps.services.Status.OK) {
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
-        const bounds = new kakao.maps.LatLngBounds()
-        let markers = []
+      ps.keywordSearch(Value, (data, status) => {
+        const resultEl = document.querySelector(".element");
+        console.log("data >>>> ", data);
+        console.log("tmp >>> ", resultEl);
+        if (status === kakao.maps.services.Status.OK) {
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+          // LatLngBounds 객체에 좌표를 추가
+          const bounds = new kakao.maps.LatLngBounds();
+          let markers = [];
 
-        for (var i = 0; i < data.length; i++) {
-          // @ts-ignore
-          markers.push({
-            position: {
-              lat: data[i].y,
-              lng: data[i].x,
-            },
-            content: data[i].place_name,
-          })
-          // @ts-ignore
-          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
+          for (var i = 0; i < data.length; i++) {
+            // @ts-ignore
+            markers.push({
+              position: {
+                lat: data[i].y,
+                lng: data[i].x,
+              },
+              content: data[i].place_name,
+            });
+            // @ts-ignore
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+          }
+          setMarkers(markers);
+
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정
+          map.setBounds(bounds);
         }
-        setMarkers(markers)
 
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        map.setBounds(bounds)
-      }
-    })
+        if (data.length !== 0) {
+          data.map((item) => {
+            console.log("item >>> ", item);
+            const resultList = document.createElement("li");
+            resultList.className = "restaurant"
+
+          });
+        }
+      });
     }
-  }
+  };
 
   // 현재 위치 추적
   const [state, setState] = useState({
@@ -71,7 +82,6 @@ export default function BasicMap() {
   });
 
   useEffect(() => {
-
     if (navigator.geolocation) {
       // GeoLocation을 이용해서 접속 위치를 얻어옴
       navigator.geolocation.getCurrentPosition(
@@ -106,45 +116,46 @@ export default function BasicMap() {
   return (
     <>
       <Fixation>
-        <SearchForm method="post" onSubmit={ submitKeyword }>
+        <SearchForm method="post" onSubmit={submitKeyword}>
           <input
             className="search-entry"
-            onChange={ keywordChange }
+            onChange={keywordChange}
             placeholder="검색어를 입력해 주세요."
             type="text"
           ></input>
           <div>
-            <button className="btn" onClick={ valueChecker }>Search</button>
+            <button className="btn" onClick={valueChecker}>
+              Search
+            </button>
           </div>
         </SearchForm>
         <div className="element">
-        <SearchResult>
-        <ul id="places-list">
-        </ul>
-        </SearchResult>
+          <SearchResult>
+            <ul id="places-list"></ul>
+          </SearchResult>
         </div>
       </Fixation>
       <div className="myMap">
-      <Map
-        center={state.center}
-        style={{ width: "758px", height: "650px", borderRadius: "10px" }}
-        level={3}
-        onCreate={setMap}
-      >
-        {markers.map((marker) => (
-        <MapMarker
-          key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-          position={marker.position}
-          onClick={() => setInfo(marker)}
+        <Map
+          center={state.center}
+          style={{ width: "758px", height: "650px", borderRadius: "10px" }}
+          level={3}
+          onCreate={setMap}
         >
-          {info &&info.content === marker.content && (
-            <div style={{color:"#000"}}>{marker.content}</div>
-          )}
-        </MapMarker>
-      ))}
-        {!state.isLoading && <MapMarker position={state.center}></MapMarker>}
-        <ZoomControl />
-      </Map>
+          {markers.map((marker) => (
+            <MapMarker
+              key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+              position={marker.position}
+              onClick={() => setInfo(marker)}
+            >
+              {info && info.content === marker.content && (
+                <div style={{ color: "#000" }}>{marker.content}</div>
+              )}
+            </MapMarker>
+          ))}
+          {!state.isLoading && <MapMarker position={state.center}></MapMarker>}
+          <ZoomControl />
+        </Map>
       </div>
     </>
   );
