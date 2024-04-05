@@ -31,9 +31,9 @@ export default function BasicMap() {
       const ps = new kakao.maps.services.Places();
 
       ps.keywordSearch(Value, (data, status) => {
-        const resultEl = document.querySelector(".element");
-        console.log("data >>>> ", data);
-        console.log("tmp >>> ", resultEl);
+        console.log("data >>> ", data);
+        // const resultEl = document.querySelector(".element");
+        // console.log("tmp >>> ", resultEl);
         if (status === kakao.maps.services.Status.OK) {
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
           // LatLngBounds 객체에 좌표를 추가
@@ -62,8 +62,31 @@ export default function BasicMap() {
           data.map((item) => {
             console.log("item >>> ", item);
             const resultList = document.createElement("li");
-            resultList.className = "restaurant"
+            resultList.className = "restaurant";
 
+            // 가게 이름
+            let restaurantName = item.place_name;
+            console.log("restaurantName >>> ", restaurantName);
+
+            // 음식 종류
+            if (item.category_name) {
+              var afterStr = item.category_name.split('>');
+              var restaurantType = afterStr[1];
+              console.log("restaurantType >>> ", restaurantType);
+            }
+
+            // 가게 주소
+            let restaurantAdd = item.road_address_name;
+            console.log("restaurantAdd >>> ", restaurantAdd);
+
+            // 가게 전화번호
+            if (item.phone !== 0) {
+              var restaurantTel = item.phone || "정보 없음"
+            }
+            console.log("restaurantTel >>> ", restaurantTel);
+
+            resultList.innerHTML = `${restaurantName === <p>안녕하세용</p>}`;
+            console.log("resultList >>> ", resultList);
           });
         }
       });
@@ -131,7 +154,7 @@ export default function BasicMap() {
         </SearchForm>
         <div className="element">
           <SearchResult>
-            <ul id="places-list"></ul>
+            <ul id="placesList"></ul>
           </SearchResult>
         </div>
       </Fixation>
