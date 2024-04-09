@@ -30,10 +30,11 @@ export default function BasicMap() {
       if (!map) return;
       const ps = new kakao.maps.services.Places();
 
-      ps.keywordSearch(Value, (data, status, size) => {
+      ps.keywordSearch(Value, (data, status, pagination) => {
         console.log("data >>> ", data);
-        console.log("size >>> ", size);
-        console.log("size.totalCount >>> ", size.totalCount);
+        console.log("size >>> ", pagination);
+
+        // pagination.nextPage();
         const resultEl = document.querySelector(".searchResult");
         resultEl.innerHTML = "";
 
@@ -51,10 +52,12 @@ export default function BasicMap() {
                 lng: data[i].x,
               },
               content: data[i].place_name,
+              place_url: data[i].place_url
             });
             // @ts-ignore
             bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
           }
+
           setMarkers(markers);
 
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정
@@ -63,9 +66,23 @@ export default function BasicMap() {
 
         if (data.length !== 0) {
           data.map((item) => {
-            console.log("item >>> ", item);
             const resultList = document.createElement("li");
             resultList.className = "restaurant";
+
+            function handleClick() {
+              const marker = {
+                position: {
+                  lat: item.y,
+                  lng: item.x,
+                },
+                content: item.place_name,
+                place_url: item.place_url
+              }
+
+              setInfo(marker);
+            }
+
+            resultList.addEventListener("click", handleClick);
 
             // 음식 종류
             if (item.category_name) {
@@ -87,7 +104,7 @@ export default function BasicMap() {
             resultEl.append(resultList);
           });
         }
-      });
+      }, {page: 2});
     }
   };
 
@@ -150,8 +167,7 @@ export default function BasicMap() {
             </button>
           </div>
         </SearchForm>
-        <SearchResult className="searchResult">
-        </SearchResult>
+        <SearchResult className="searchResult"></SearchResult>
       </Fixation>
       <div className="myMap">
         <Map
@@ -164,11 +180,16 @@ export default function BasicMap() {
             <MapMarker
               key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
               position={marker.position}
-              onClick={() => setInfo(marker)}
             >
               {info && info.content === marker.content && (
                 <div style={{ color: "#000", textAlign: "center" }}>
-                  {marker.content}
+                  <a
+                    target="blank"
+                    href={`${marker.place_url}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    {marker.content}
+                  </a>
                 </div>
               )}
             </MapMarker>

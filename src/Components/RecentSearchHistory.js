@@ -8,11 +8,7 @@ const RecentSearchHistory = () => {
       <PlaceList>
         <h2>최근 검색 기록⏰</h2>
       </PlaceList>
-      <ListBox>
-        <img src="../img/placeimg.png" alt="substitute"/>
-        <img src="../img/placeimg.png" alt="substitute"/>
-        <img src="../img/placeimg.png" alt="substitute"/>
-      </ListBox>
+      <ListBox />
     </Outside>
     </>
   );
@@ -42,10 +38,6 @@ const ListBox = styled.div`
   border-radius: 10px;
   display: block;
   width: 1300px;
-  height: 380px;
+  height: 100px;
   background: #f4e384;
-
-  img {
-    margin: 30px;
-  }
 `;
