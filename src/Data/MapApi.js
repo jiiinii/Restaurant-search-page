@@ -28,83 +28,66 @@ export default function BasicMap() {
       alert("검색어를 입력해주세요.");
     } else {
       if (!map) return;
-      const ps = new kakao.maps.services.Places();
+      const places = new kakao.maps.services.Places();
 
-      ps.keywordSearch(Value, (data, status, pagination) => {
-        console.log("data >>> ", data);
-        console.log("size >>> ", pagination);
-
-        // pagination.nextPage();
+      places.keywordSearch(Value, (data, status) => {
         const resultEl = document.querySelector(".searchResult");
         resultEl.innerHTML = "";
 
         if (status === kakao.maps.services.Status.OK) {
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-          // LatLngBounds 객체에 좌표를 추가
           const bounds = new kakao.maps.LatLngBounds();
-          let markers = [];
+          let markers = []; // 검색 시 마커 보이기
 
-          for (var i = 0; i < data.length; i++) {
-            // @ts-ignore
-            markers.push({
-              position: {
-                lat: data[i].y,
-                lng: data[i].x,
-              },
-              content: data[i].place_name,
-              place_url: data[i].place_url
-            });
-            // @ts-ignore
-            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-          }
-
+          data.forEach((item) => {
+            const marker = createMarker(item);
+            markers.push(marker);
+            bounds.extend(new kakao.maps.LatLng(item.y, item.x));
+      
+            appendResultListItem(resultEl, item, marker);
+          });
+      
           setMarkers(markers);
-
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정
           map.setBounds(bounds);
         }
 
-        if (data.length !== 0) {
-          data.map((item) => {
-            const resultList = document.createElement("li");
-            resultList.className = "restaurant";
+        function createMarker(item) {
+          return {
+            position: {
+              lat: item.y,
+              lng: item.x,
+            },
+            content: item.place_name,
+            place_url: item.place_url
+          };
+        }
 
-            function handleClick() {
-              const marker = {
-                position: {
-                  lat: item.y,
-                  lng: item.x,
-                },
-                content: item.place_name,
-                place_url: item.place_url
-              }
+        function appendResultListItem(parent, item, marker) {
+          const resultList = document.createElement("li");
+          resultList.className = "restaurant";
 
-              setInfo(marker);
-            }
-
-            resultList.addEventListener("click", handleClick);
-
-            // 음식 종류
-            if (item.category_name) {
-              var afterStr = item.category_name.split(">");
-              var restaurantType = afterStr[1];
-            }
-
-            // 가게 전화번호
-            if (item.phone !== 0) {
-              var restaurantTel = item.phone || "정보 없음";
-            }
-
-            resultList.innerHTML = `${`<div className = "placeAndtype" style = "display: flex";><p className = "placeName">${item.place_name}</p>&nbsp;<p>${restaurantType}</p></div>`}
+          resultList.addEventListener("click", () => handleClick(marker));
+        
+          const restaurantType = item.category_name ? item.category_name.split(">")[1] : "";
+          const restaurantTel = item.phone !== 0 ? item.phone : "정보 없음";
+        
+          resultList.innerHTML = `
+            <div class="placeAndtype" style="display: flex;">
+              <p class="placeName">${item.place_name}</p>&nbsp;
+              <p>${restaurantType}</p>
+            </div>
             <p>주소: ${item.address_name}</p>
             <p>도로명: ${item.road_address_name}</p>
             <p>Tel: ${restaurantTel}</p>
-            <hr>`;
-
-            resultEl.append(resultList);
-          });
+            <hr>
+          `;
+        
+          parent.appendChild(resultList);
         }
-      }, {page: 2});
+
+        function handleClick(marker) {
+          setInfo(marker);
+        }
+      }, {page: 3});
     }
   };
 
