@@ -29,48 +29,52 @@ export default function BasicMap() {
     } else {
       if (!map) return;
       const places = new kakao.maps.services.Places();
+      const pageBtn = document.querySelector('.pageBtn');
 
       places.keywordSearch(Value, (data, status) => {
-        const resultEl = document.querySelector(".searchResult");
-        resultEl.innerHTML = "";
+          const resultEl = document.querySelector(".searchResult");
+          resultEl.innerHTML = "";
+          pageBtn.style.display = "block"
 
-        if (status === kakao.maps.services.Status.OK) {
-          const bounds = new kakao.maps.LatLngBounds();
-          let markers = []; // 검색 시 마커 보이기
+          if (status === kakao.maps.services.Status.OK) {
+            const bounds = new kakao.maps.LatLngBounds();
+            let markers = []; // 검색 시 마커 보이기
 
-          data.forEach((item) => {
-            const marker = createMarker(item);
-            markers.push(marker);
-            bounds.extend(new kakao.maps.LatLng(item.y, item.x));
-      
-            appendResultListItem(resultEl, item, marker);
-          });
-      
-          setMarkers(markers);
-          map.setBounds(bounds);
-        }
+            data.forEach((item) => {
+              const marker = createMarker(item);
+              markers.push(marker);
+              bounds.extend(new kakao.maps.LatLng(item.y, item.x));
 
-        function createMarker(item) {
-          return {
-            position: {
-              lat: item.y,
-              lng: item.x,
-            },
-            content: item.place_name,
-            place_url: item.place_url
-          };
-        }
+              appendResultListItem(resultEl, item, marker);
+            });
 
-        function appendResultListItem(parent, item, marker) {
-          const resultList = document.createElement("li");
-          resultList.className = "restaurant";
+            setMarkers(markers);
+            map.setBounds(bounds);
+          }
 
-          resultList.addEventListener("click", () => handleClick(marker));
-        
-          const restaurantType = item.category_name ? item.category_name.split(">")[1] : "";
-          const restaurantTel = item.phone !== 0 ? item.phone : "정보 없음";
-        
-          resultList.innerHTML = `
+          function createMarker(item) {
+            return {
+              position: {
+                lat: item.y,
+                lng: item.x,
+              },
+              content: item.place_name,
+              place_url: item.place_url,
+            };
+          }
+
+          function appendResultListItem(parent, item, marker) {
+            const resultList = document.createElement("li");
+            resultList.className = "restaurant";
+
+            resultList.addEventListener("click", () => handleClick(marker));
+
+            const restaurantType = item.category_name
+              ? item.category_name.split(">")[1]
+              : "";
+            const restaurantTel = item.phone !== 0 ? item.phone : "정보 없음";
+
+            resultList.innerHTML = `
             <div class="placeAndtype" style="display: flex;">
               <p class="placeName">${item.place_name}</p>&nbsp;
               <p>${restaurantType}</p>
@@ -80,14 +84,16 @@ export default function BasicMap() {
             <p>Tel: ${restaurantTel}</p>
             <hr>
           `;
-        
-          parent.appendChild(resultList);
-        }
 
-        function handleClick(marker) {
-          setInfo(marker);
-        }
-      }, {page: 3});
+            parent.appendChild(resultList);
+          }
+
+          function handleClick(marker) {
+            setInfo(marker);
+          }
+        },
+        { page: 1 }
+      );
     }
   };
 
@@ -151,6 +157,10 @@ export default function BasicMap() {
           </div>
         </SearchForm>
         <SearchResult className="searchResult"></SearchResult>
+        <PageButton className="pageBtn">
+          <button id="prevBtn">prev</button>
+          <button id="nextBtn">next</button>
+        </PageButton>
       </Fixation>
       <div className="myMap">
         <Map
@@ -163,6 +173,7 @@ export default function BasicMap() {
             <MapMarker
               key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
               position={marker.position}
+              onClick={() => setInfo(marker)}
             >
               {info && info.content === marker.content && (
                 <div style={{ color: "#000", textAlign: "center" }}>
@@ -235,4 +246,15 @@ const SearchResult = styled.div`
   border-radius: 8px;
   overflow: auto;
   padding: 20px;
+`;
+
+const PageButton = styled.div`
+  margin-top: 10px;
+  width: 465px;
+  text-align: center;
+  display: none;
+
+  button + button {
+    margin-left: 10px;
+  }
 `;
