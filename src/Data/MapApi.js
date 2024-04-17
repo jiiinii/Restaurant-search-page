@@ -29,19 +29,22 @@ export default function BasicMap() {
     } else {
       if (!map) return;
       const places = new kakao.maps.services.Places();
-      const pageBtn = document.querySelector('.pageBtn');
+      const pageBtn = document.querySelector(".pageBtn");
 
-      places.keywordSearch(Value,(data, status) => {
+      places.keywordSearch(
+        Value,
+        (data, status, pagination) => {
           const resultEl = document.querySelector(".searchResult");
+          var nextBtnClick = document.getElementById("nextBtn");
           resultEl.innerHTML = "";
           pageBtn.style.display = "block";
 
-          // if (pagination.hasNextPage) {
-          //   // 있으면 다음 페이지를 검색한다.
-          //   pagination.nextPage();
-          // }
-
-          // console.log(`pagination >>> `, pagination);
+          if (pagination.hasNextPage) {
+            nextBtnClick.addEventListener("click", function () {
+              console.log(`clickkkkk >>>`);
+              pagination.nextPage();
+            });
+          }
 
           if (status === kakao.maps.services.Status.OK) {
             const bounds = new kakao.maps.LatLngBounds();
@@ -53,6 +56,7 @@ export default function BasicMap() {
               bounds.extend(new kakao.maps.LatLng(item.y, item.x));
 
               appendResultListItem(resultEl, item, marker);
+              // dataList(resultEl);
             });
 
             setMarkers(markers);
@@ -103,14 +107,6 @@ export default function BasicMap() {
       );
     }
   };
-
-  const dataList = (pagination) => {
-    console.log(`ddddd >>> `, pagination)
-    if (pagination.hasNextPage === true) {
-      // 있으면 다음 페이지를 검색한다.
-      pagination.nextPage();
-    }
-  }
 
   // 현재 위치 추적
   const [state, setState] = useState({
@@ -173,8 +169,8 @@ export default function BasicMap() {
         </SearchForm>
         <SearchResult className="searchResult"></SearchResult>
         <PageButton className="pageBtn">
-          <button id="prevBtn" onClick={dataList}>prev</button>
-          <button id="nextBtn" onClick={dataList}>next</button>
+          <button id="prevBtn">prev</button>
+          <button id="nextBtn">next</button>
         </PageButton>
       </Fixation>
       <div className="myMap">
