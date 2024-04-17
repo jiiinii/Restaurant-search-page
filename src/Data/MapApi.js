@@ -31,10 +31,17 @@ export default function BasicMap() {
       const places = new kakao.maps.services.Places();
       const pageBtn = document.querySelector('.pageBtn');
 
-      places.keywordSearch(Value, (data, status) => {
+      places.keywordSearch(Value,(data, status) => {
           const resultEl = document.querySelector(".searchResult");
           resultEl.innerHTML = "";
-          pageBtn.style.display = "block"
+          pageBtn.style.display = "block";
+
+          // if (pagination.hasNextPage) {
+          //   // 있으면 다음 페이지를 검색한다.
+          //   pagination.nextPage();
+          // }
+
+          // console.log(`pagination >>> `, pagination);
 
           if (status === kakao.maps.services.Status.OK) {
             const bounds = new kakao.maps.LatLngBounds();
@@ -97,6 +104,14 @@ export default function BasicMap() {
     }
   };
 
+  const dataList = (pagination) => {
+    console.log(`ddddd >>> `, pagination)
+    if (pagination.hasNextPage === true) {
+      // 있으면 다음 페이지를 검색한다.
+      pagination.nextPage();
+    }
+  }
+
   // 현재 위치 추적
   const [state, setState] = useState({
     center: {
@@ -158,8 +173,8 @@ export default function BasicMap() {
         </SearchForm>
         <SearchResult className="searchResult"></SearchResult>
         <PageButton className="pageBtn">
-          <button id="prevBtn">prev</button>
-          <button id="nextBtn">next</button>
+          <button id="prevBtn" onClick={dataList}>prev</button>
+          <button id="nextBtn" onClick={dataList}>next</button>
         </PageButton>
       </Fixation>
       <div className="myMap">
