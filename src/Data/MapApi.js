@@ -31,20 +31,14 @@ export default function BasicMap() {
       const places = new kakao.maps.services.Places();
       const pageBtn = document.querySelector(".pageBtn");
 
-      places.keywordSearch(
-        Value,
-        (data, status, pagination) => {
+      places.keywordSearch(Value,(data, status, pagination) => {
           const resultEl = document.querySelector(".searchResult");
           var nextBtnClick = document.getElementById("nextBtn");
           resultEl.innerHTML = "";
           pageBtn.style.display = "block";
 
-          if (pagination.hasNextPage) {
-            nextBtnClick.addEventListener("click", function () {
-              console.log(`clickkkkk >>>`);
-              pagination.nextPage();
-            });
-          }
+          console.log(`status >>> `, status);
+          console.log(`data >>> `, data);
 
           if (status === kakao.maps.services.Status.OK) {
             const bounds = new kakao.maps.LatLngBounds();
@@ -56,11 +50,26 @@ export default function BasicMap() {
               bounds.extend(new kakao.maps.LatLng(item.y, item.x));
 
               appendResultListItem(resultEl, item, marker);
-              // dataList(resultEl);
             });
 
             setMarkers(markers);
             map.setBounds(bounds);
+
+            if (pagination.hasNextPage) {
+              nextBtnClick.addEventListener("click", function () {
+                console.log(`clickkkkk >>>`);
+                pagination.nextPage();
+              });
+            }
+
+          } else if(status === kakao.maps.services.Status.ZERO_RESULT) {
+            pageBtn.style.display = "none";
+            alert('검색 결과가 존재하지 않습니다.');
+            return;
+
+          } else if (status === kakao.maps.services.Status.ERROR) {
+            alert('검색 결과 중 오류가 발생했습니다.');
+            return;
           }
 
           function createMarker(item) {
