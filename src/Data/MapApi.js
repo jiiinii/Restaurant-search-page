@@ -30,15 +30,16 @@ export default function BasicMap() {
       if (!map) return;
       const places = new kakao.maps.services.Places();
       const pageBtn = document.querySelector(".pageBtn");
-
+      
       places.keywordSearch(Value,(data, status, pagination) => {
-          const resultEl = document.querySelector(".searchResult");
-          var nextBtnClick = document.getElementById("nextBtn");
+        const resultEl = document.querySelector(".searchResult");
+        var nextBtnClick = document.getElementById("nextBtn");
+        var prevBtnClick = document.getElementById("prevBtn");
           resultEl.innerHTML = "";
           pageBtn.style.display = "block";
 
-          console.log(`status >>> `, status);
-          console.log(`data >>> `, data);
+          console.log("data >>> ", data);
+          console.log("pagination >>> ", pagination);
 
           if (status === kakao.maps.services.Status.OK) {
             const bounds = new kakao.maps.LatLngBounds();
@@ -57,9 +58,14 @@ export default function BasicMap() {
 
             if (pagination.hasNextPage) {
               nextBtnClick.addEventListener("click", function () {
-                console.log(`clickkkkk >>>`);
                 pagination.nextPage();
-              });
+              }, { once : true});
+            }
+
+            if (pagination.hasPrevPage) {
+              prevBtnClick.addEventListener("click", function () {
+                pagination.prevPage();
+              }, { once : true});
             }
 
           } else if(status === kakao.maps.services.Status.ZERO_RESULT) {
