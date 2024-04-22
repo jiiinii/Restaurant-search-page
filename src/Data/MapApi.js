@@ -38,8 +38,9 @@ export default function BasicMap() {
           resultEl.innerHTML = "";
           pageBtn.style.display = "block";
 
-          console.log("data >>> ", data);
-          console.log("pagination >>> ", pagination);
+          console.log(`data >>> `, data);
+          console.log(`pagination >>> `, pagination);
+          console.log(`<--------------------------->`);
 
           if (status === kakao.maps.services.Status.OK) {
             const bounds = new kakao.maps.LatLngBounds();
@@ -56,16 +57,29 @@ export default function BasicMap() {
             setMarkers(markers);
             map.setBounds(bounds);
 
-            if (pagination.hasNextPage) {
+
+            // 다음 페이지
+            if (pagination.hasNextPage === true) {
+              console.log(`hasNextPage >>> `);
               nextBtnClick.addEventListener("click", function () {
                 pagination.nextPage();
-              }, { once : true});
+              });
+            } else if (pagination.hasNextPage === false) {
+              nextBtnClick.removeEventListener("click", function () {
+                pagination.nextPage();
+              });
             }
-
+            
+            // 이전 페이지
             if (pagination.hasPrevPage) {
+              console.log(`hasPrevPage >>> `);
               prevBtnClick.addEventListener("click", function () {
                 pagination.prevPage();
-              }, { once : true});
+              });
+            } else if (pagination.hasPrevPage === false) {
+              prevBtnClick.removeEventListener("click", function () {
+                pagination.prevPage();
+              });
             }
 
           } else if(status === kakao.maps.services.Status.ZERO_RESULT) {

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
-import MapApi from "../data/mapApi";
+import MapApi from "../data/MapApi";
 import ProducerInfo from "./ProducerInfo";
 
 const eaterySearch = () => {
