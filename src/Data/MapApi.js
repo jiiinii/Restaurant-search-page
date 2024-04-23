@@ -30,11 +30,11 @@ export default function BasicMap() {
       if (!map) return;
       const places = new kakao.maps.services.Places();
       const pageBtn = document.querySelector(".pageBtn");
-      
-      places.keywordSearch(Value,(data, status, pagination) => {
-        const resultEl = document.querySelector(".searchResult");
-        var nextBtnClick = document.getElementById("nextBtn");
-        var prevBtnClick = document.getElementById("prevBtn");
+      const pageBox = document.querySelector(".pageBox");
+
+      places.keywordSearch(Value,
+        (data, status, pagination) => {
+          const resultEl = document.querySelector(".searchResult");
           resultEl.innerHTML = "";
           pageBtn.style.display = "block";
 
@@ -57,38 +57,22 @@ export default function BasicMap() {
             setMarkers(markers);
             map.setBounds(bounds);
 
-
-            // 다음 페이지
-            if (pagination.hasNextPage === true) {
-              console.log(`hasNextPage >>> `);
-              nextBtnClick.addEventListener("click", function () {
-                pagination.nextPage();
-              });
-            } else if (pagination.hasNextPage === false) {
-              nextBtnClick.removeEventListener("click", function () {
-                pagination.nextPage();
-              });
+            if(pagination.hasNextPage){
+              pageBox.innerHTML += `<li class = "resultBtn"><a>next</a></li>`
             }
+
+              pageBox.addEventListener("click", (e) => {
+                e.preventDefault();
+                console.log(`click >>> `);
+              })
             
-            // 이전 페이지
-            if (pagination.hasPrevPage) {
-              console.log(`hasPrevPage >>> `);
-              prevBtnClick.addEventListener("click", function () {
-                pagination.prevPage();
-              });
-            } else if (pagination.hasPrevPage === false) {
-              prevBtnClick.removeEventListener("click", function () {
-                pagination.prevPage();
-              });
-            }
 
-          } else if(status === kakao.maps.services.Status.ZERO_RESULT) {
+          } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
             pageBtn.style.display = "none";
-            alert('검색 결과가 존재하지 않습니다.');
+            alert("검색 결과가 존재하지 않습니다.");
             return;
-
           } else if (status === kakao.maps.services.Status.ERROR) {
-            alert('검색 결과 중 오류가 발생했습니다.');
+            alert("검색 결과 중 오류가 발생했습니다.");
             return;
           }
 
@@ -197,10 +181,7 @@ export default function BasicMap() {
           </div>
         </SearchForm>
         <SearchResult className="searchResult"></SearchResult>
-        <PageButton className="pageBtn">
-          <button id="prevBtn">prev</button>
-          <button id="nextBtn">next</button>
-        </PageButton>
+        <PageButton className="pageBtn"><PageBox className="pageBox"></PageBox></PageButton>
       </Fixation>
       <div className="myMap">
         <Map
@@ -298,3 +279,18 @@ const PageButton = styled.div`
     margin-left: 10px;
   }
 `;
+
+const PageBox = styled.div`
+  cursor: pointer;
+  display: inline-block;
+
+  .resultBtn {
+    color: black;
+    float: left;
+    padding: 4px 10px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 2px solid #222;
+    margin: 0 4px;
+  }
+`
