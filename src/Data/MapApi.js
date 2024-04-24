@@ -31,10 +31,11 @@ export default function BasicMap() {
       const places = new kakao.maps.services.Places();
       const pageBtn = document.querySelector(".pageBtn");
       const pageBox = document.querySelector(".pageBox");
-
-      places.keywordSearch(Value,
-        (data, status, pagination) => {
+      places.keywordSearch(Value, (data, status, pagination) => {
           const resultEl = document.querySelector(".searchResult");
+          // var nextBtnClick = document.getElementsByClassName("nextBtn");
+          // var prevBtnClick = document.getElementsByClassName("prevBtn");
+
           resultEl.innerHTML = "";
           pageBtn.style.display = "block";
 
@@ -57,15 +58,68 @@ export default function BasicMap() {
             setMarkers(markers);
             map.setBounds(bounds);
 
-            if(pagination.hasNextPage){
-              pageBox.innerHTML += `<li class = "resultBtn"><a>next</a></li>`
+
+            // 다음 페이지 버튼
+            const removeBtn = () => {
+              pageBox.removeEventListener("click", nextInfo);
+              pageBox.removeEventListener("click", prevInfo);
             }
 
-              pageBox.addEventListener("click", (e) => {
-                e.preventDefault();
-                console.log(`click >>> `);
-              })
+            var nextInfo = function () {
+              removeBtn();
+              pagination.nextPage();
+            }
+
+            if(pagination.hasNextPage){
+              console.log(`pagination.hasNextPage >>> `, pagination.hasNextPage);
+              pageBox.innerHTML = `<li class = "nextBtn"><a>next</a></li>`
+            }
             
+            pageBox.addEventListener("click", () => {
+              console.log(`click next>>> `);
+              nextInfo()
+            })
+
+            // 이전 페이지 버튼
+            var prevInfo = function () {
+              removeBtn();
+              pagination.prevPage();
+            }
+            
+            if(pagination.hasPrevPage){
+              console.log(`pagination.hasPrevPage >>> `, pagination.hasPrevPage);
+              pageBox.innerHTML = `<li class = "prevBtn"><a>prev</a></li>`
+            }
+            
+            pageBox.addEventListener("click", () => {
+              console.log(`click prev>>> `);
+              prevInfo()
+            })
+            
+            // const removeBtn = () => {
+            //   nextBtnClick[0].removeEventListener("click", nextInfo);
+            //   prevBtnClick[0].removeEventListener("click", prevInfo);
+            // }
+
+            // var nextInfo = function () {
+            //   removeBtn();
+            //   pagination.nextPage();
+            // };
+
+            // if (pagination.hasNextPage) {
+            //   console.log(`hasNextPage >>> `);
+            //   nextBtnClick[0].addEventListener("click", nextInfo);
+            // }
+
+            // var prevInfo = function () {
+            //   removeBtn();
+            //   pagination.prevPage();
+            // }
+
+            // if (pagination.hasPrevPage) {
+            //   console.log(`hasPrevPage >>> `);
+            //   prevBtnClick[0].addEventListener("click", prevInfo);
+            // }
 
           } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
             pageBtn.style.display = "none";
@@ -181,7 +235,11 @@ export default function BasicMap() {
           </div>
         </SearchForm>
         <SearchResult className="searchResult"></SearchResult>
-        <PageButton className="pageBtn"><PageBox className="pageBox"></PageBox></PageButton>
+        <PageButton className="pageBtn">
+          {/* <button className="prevBtn">prev</button> */}
+          {/* <button className="nextBtn">next</button> */}
+          <PageBox className="pageBox"></PageBox>
+        </PageButton>
       </Fixation>
       <div className="myMap">
         <Map
@@ -278,13 +336,13 @@ const PageButton = styled.div`
   button + button {
     margin-left: 10px;
   }
-`;
+  `;
 
-const PageBox = styled.div`
+  const PageBox = styled.div`
   cursor: pointer;
   display: inline-block;
 
-  .resultBtn {
+  .nextBtn, .prevBtn {
     color: black;
     float: left;
     padding: 4px 10px;
