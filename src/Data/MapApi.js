@@ -51,41 +51,42 @@ export default function BasicMap() {
             setMarkers(markers);
             map.setBounds(bounds);
 
-            const aboutNextPage = () => {
-              const nextBtn = pageBox.querySelector(".nextBtn");
-              nextBtn.addEventListener("click", () => {
-                console.log(`click next>>> `);
-                pagination.nextPage();
+            const paginationCheck = (tmp) => {
+              const parent = document.createElement("li");
+              const child = document.createElement("a");
+              parent.className = `${tmp}Btn`;
+              pageBox.append(parent);
+              parent.append(child);
+              child.append(`${tmp}`);
+              const idxBtn = pageBox.querySelector(`.${tmp}Btn`);
+              idxBtn.addEventListener("click", function(){
+                if("next" === tmp) {
+                  console.log(`next tmp >>>>>>`);
+                  pagination.nextPage();
+                } else if("prev" === tmp) {
+                  console.log(`prev tmp >>>>>>`);
+                  pagination.prevPage();
+                }
               })
-            }
-
-            const aboutPrevPage = () => {
-              const prevBtn = pageBox.querySelector(".prevBtn");
-              prevBtn.addEventListener("click", () => {
-                console.log(`click prev>>> `);
-                pagination.prevPage();
-              })
-            }
-
-            if(pagination.hasNextPage){
-              console.log(`pagination.hasNextPage >>> `, pagination.hasNextPage);
-              pageBox.innerHTML = `<li class = "nextBtn"><a>next</a></li>`
-              aboutNextPage();
-            }
-            
-
-            
-            if(pagination.hasPrevPage){
-              console.log(`pagination.hasPrevPage >>> `, pagination.hasPrevPage);
-              pageBox.innerHTML = `<li class = "prevBtn"><a>prev</a></li>`
-              aboutPrevPage();
             }
 
             if(pagination.hasNextPage && pagination.hasPrevPage){
               pageBox.innerHTML = `<li class = "prevBtn"><a>prev</a></li><li class = "nextBtn"><a>next</a></li>`
-              aboutPrevPage();
-              aboutNextPage();
-            }
+              const prevBtn = pageBox.querySelector(".prevBtn");
+              prevBtn.addEventListener("click", () => {
+                console.log(`click prev >>>>>>`);
+                pagination.prevPage();
+              })
+              const nextBtn = pageBox.querySelector(".nextBtn");
+              nextBtn.addEventListener("click", () => {
+                console.log(`click next >>>>>>`);
+                pagination.nextPage();
+              })
+            } else if(pagination.hasNextPage){
+              paginationCheck("next");
+            } else if(pagination.hasPrevPage){
+              paginationCheck("prev");
+            } // createElement
 
           } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
             pageBtn.style.display = "none";
@@ -116,7 +117,7 @@ export default function BasicMap() {
             const restaurantType = item.category_name
               ? item.category_name.split(">")[1]
               : "";
-            const restaurantTel = item.phone !== 0 ? item.phone : "정보 없음";
+            const restaurantTel = item.phone !== "" ? item.phone : "정보 없음";
 
             resultList.innerHTML = `
             <div class="placeAndtype" style="display: flex;">
