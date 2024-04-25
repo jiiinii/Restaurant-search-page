@@ -33,15 +33,8 @@ export default function BasicMap() {
       const pageBox = document.querySelector(".pageBox");
       places.keywordSearch(Value, (data, status, pagination) => {
           const resultEl = document.querySelector(".searchResult");
-          // var nextBtnClick = document.getElementsByClassName("nextBtn");
-          // var prevBtnClick = document.getElementsByClassName("prevBtn");
-
           resultEl.innerHTML = "";
           pageBtn.style.display = "block";
-
-          console.log(`data >>> `, data);
-          console.log(`pagination >>> `, pagination);
-          console.log(`<--------------------------->`);
 
           if (status === kakao.maps.services.Status.OK) {
             const bounds = new kakao.maps.LatLngBounds();
@@ -58,68 +51,41 @@ export default function BasicMap() {
             setMarkers(markers);
             map.setBounds(bounds);
 
-
-            // 다음 페이지 버튼
-            const removeBtn = () => {
-              pageBox.removeEventListener("click", nextInfo);
-              pageBox.removeEventListener("click", prevInfo);
+            const aboutNextPage = () => {
+              const nextBtn = pageBox.querySelector(".nextBtn");
+              nextBtn.addEventListener("click", () => {
+                console.log(`click next>>> `);
+                pagination.nextPage();
+              })
             }
 
-            var nextInfo = function () {
-              removeBtn();
-              pagination.nextPage();
+            const aboutPrevPage = () => {
+              const prevBtn = pageBox.querySelector(".prevBtn");
+              prevBtn.addEventListener("click", () => {
+                console.log(`click prev>>> `);
+                pagination.prevPage();
+              })
             }
 
             if(pagination.hasNextPage){
               console.log(`pagination.hasNextPage >>> `, pagination.hasNextPage);
               pageBox.innerHTML = `<li class = "nextBtn"><a>next</a></li>`
+              aboutNextPage();
             }
             
-            pageBox.addEventListener("click", () => {
-              console.log(`click next>>> `);
-              nextInfo()
-            })
 
-            // 이전 페이지 버튼
-            var prevInfo = function () {
-              removeBtn();
-              pagination.prevPage();
-            }
             
             if(pagination.hasPrevPage){
               console.log(`pagination.hasPrevPage >>> `, pagination.hasPrevPage);
               pageBox.innerHTML = `<li class = "prevBtn"><a>prev</a></li>`
+              aboutPrevPage();
             }
-            
-            pageBox.addEventListener("click", () => {
-              console.log(`click prev>>> `);
-              prevInfo()
-            })
-            
-            // const removeBtn = () => {
-            //   nextBtnClick[0].removeEventListener("click", nextInfo);
-            //   prevBtnClick[0].removeEventListener("click", prevInfo);
-            // }
 
-            // var nextInfo = function () {
-            //   removeBtn();
-            //   pagination.nextPage();
-            // };
-
-            // if (pagination.hasNextPage) {
-            //   console.log(`hasNextPage >>> `);
-            //   nextBtnClick[0].addEventListener("click", nextInfo);
-            // }
-
-            // var prevInfo = function () {
-            //   removeBtn();
-            //   pagination.prevPage();
-            // }
-
-            // if (pagination.hasPrevPage) {
-            //   console.log(`hasPrevPage >>> `);
-            //   prevBtnClick[0].addEventListener("click", prevInfo);
-            // }
+            if(pagination.hasNextPage && pagination.hasPrevPage){
+              pageBox.innerHTML = `<li class = "prevBtn"><a>prev</a></li><li class = "nextBtn"><a>next</a></li>`
+              aboutPrevPage();
+              aboutNextPage();
+            }
 
           } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
             pageBtn.style.display = "none";
@@ -236,8 +202,6 @@ export default function BasicMap() {
         </SearchForm>
         <SearchResult className="searchResult"></SearchResult>
         <PageButton className="pageBtn">
-          {/* <button className="prevBtn">prev</button> */}
-          {/* <button className="nextBtn">next</button> */}
           <PageBox className="pageBox"></PageBox>
         </PageButton>
       </Fixation>
