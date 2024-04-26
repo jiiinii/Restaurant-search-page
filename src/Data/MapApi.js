@@ -52,6 +52,7 @@ export default function BasicMap() {
             map.setBounds(bounds);
 
             const paginationCheck = (tmp) => {
+              pageBox.innerHTML = "";
               const parent = document.createElement("li");
               const child = document.createElement("a");
               parent.className = `${tmp}Btn`;
@@ -71,22 +72,13 @@ export default function BasicMap() {
             }
 
             if(pagination.hasNextPage && pagination.hasPrevPage){
-              pageBox.innerHTML = `<li class = "prevBtn"><a>prev</a></li><li class = "nextBtn"><a>next</a></li>`
-              const prevBtn = pageBox.querySelector(".prevBtn");
-              prevBtn.addEventListener("click", () => {
-                console.log(`click prev >>>>>>`);
-                pagination.prevPage();
-              })
-              const nextBtn = pageBox.querySelector(".nextBtn");
-              nextBtn.addEventListener("click", () => {
-                console.log(`click next >>>>>>`);
-                pagination.nextPage();
-              })
+              paginationCheck("next");
+              paginationCheck("prev");
             } else if(pagination.hasNextPage){
               paginationCheck("next");
             } else if(pagination.hasPrevPage){
               paginationCheck("prev");
-            } // createElement
+            }
 
           } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
             pageBtn.style.display = "none";
