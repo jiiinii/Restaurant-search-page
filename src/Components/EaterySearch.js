@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
-import MapApi from "../data/MapApi";
+import MapApi from "../Data/MapApi";
 import ProducerInfo from "./ProducerInfo";
 
 const eaterySearch = () => {
@@ -74,4 +74,4 @@ const Lump = styled.div`
 const SearchForInformation = styled.div`
   display: flex;
   float: unset;
-`
+`;

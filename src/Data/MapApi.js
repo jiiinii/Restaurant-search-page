@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
-import UseKakaoLoader from "./useKakaoLoader";
+import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
 export default function BasicMap() {
