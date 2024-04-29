@@ -53,31 +53,30 @@ export default function BasicMap() {
 
             const paginationCheck = (tmp) => {
               pageBox.innerHTML = "";
-              const parent = document.createElement("li");
-              const child = document.createElement("a");
-              parent.className = `${tmp}Btn`;
-              pageBox.append(parent);
-              parent.append(child);
-              child.append(`${tmp}`);
-              const idxBtn = pageBox.querySelector(`.${tmp}Btn`);
-              idxBtn.addEventListener("click", function(){
-                if("next" === tmp) {
-                  console.log(`next tmp >>>>>>`);
-                  pagination.nextPage();
-                } else if("prev" === tmp) {
-                  console.log(`prev tmp >>>>>>`);
-                  pagination.prevPage();
-                }
+              tmp.forEach(function(index){
+                const parent = document.createElement("li");
+                const child = document.createElement("a");
+                parent.className = `${index}Btn`;
+                pageBox.append(parent);
+                parent.append(child);
+                child.append(`${index}`);
+                const idxBtn = pageBox.querySelector(`.${index}Btn`);
+                idxBtn.addEventListener("click", function(){
+                  if("next" === index) {
+                    pagination.nextPage();
+                  } else if("prev" === index) {
+                    pagination.prevPage();
+                  }
+                })
               })
             }
 
             if(pagination.hasNextPage && pagination.hasPrevPage){
-              paginationCheck("next");
-              paginationCheck("prev");
+              paginationCheck(["prev","next"]);
             } else if(pagination.hasNextPage){
-              paginationCheck("next");
+              paginationCheck(["next"]);
             } else if(pagination.hasPrevPage){
-              paginationCheck("prev");
+              paginationCheck(["prev"]);
             }
 
           } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
@@ -286,20 +285,27 @@ const SearchResult = styled.div`
 
 const PageButton = styled.div`
   margin-top: 10px;
-  width: 465px;
-  text-align: center;
+  width: 310px;
+  text-align: right;
   display: none;
 
-  button + button {
-    margin-left: 10px;
-  }
   `;
 
   const PageBox = styled.div`
   cursor: pointer;
   display: inline-block;
 
-  .nextBtn, .prevBtn {
+  .nextBtn {
+    color: black;
+    float: right;
+    padding: 4px 10px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 2px solid #222;
+    margin: 0 4px;
+  }
+  
+  .prevBtn {
     color: black;
     float: left;
     padding: 4px 10px;
