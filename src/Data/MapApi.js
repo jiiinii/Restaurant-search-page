@@ -62,9 +62,9 @@ export default function BasicMap() {
                 child.append(`${index}`);
                 const idxBtn = pageBox.querySelector(`.${index}Btn`);
                 idxBtn.addEventListener("click", function(){
-                  if("next" === index) {
+                  if("nextPage" === index) {
                     pagination.nextPage();
-                  } else if("prev" === index) {
+                  } else if("prevPage" === index) {
                     pagination.prevPage();
                   }
                 })
@@ -72,11 +72,11 @@ export default function BasicMap() {
             }
 
             if(pagination.hasNextPage && pagination.hasPrevPage){
-              paginationCheck(["prev","next"]);
+              paginationCheck(["prevPage","nextPage"]);
             } else if(pagination.hasNextPage){
-              paginationCheck(["next"]);
+              paginationCheck(["prev","nextPage"]);
             } else if(pagination.hasPrevPage){
-              paginationCheck(["prev"]);
+              paginationCheck(["prevPage","next"]);
             }
 
           } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
@@ -285,8 +285,8 @@ const SearchResult = styled.div`
 
 const PageButton = styled.div`
   margin-top: 10px;
-  width: 310px;
-  text-align: right;
+  width: 465px;
+  text-align: center;
   display: none;
 
   `;
@@ -300,17 +300,35 @@ const PageButton = styled.div`
     float: right;
     padding: 4px 10px;
     text-decoration: none;
-    transition: background-color .3s;
     border: 2px solid #222;
     margin: 0 4px;
   }
-  
+
+  .nextPageBtn {
+    color: black;
+    float: right;
+    padding: 4px 10px;
+    background-color: #efe4a2;
+    text-decoration: none;
+    border: 2px solid #222;
+    margin: 0 4px;
+  }
+
   .prevBtn {
     color: black;
     float: left;
     padding: 4px 10px;
     text-decoration: none;
-    transition: background-color .3s;
+    border: 2px solid #222;
+    margin: 0 4px;
+  }
+
+  .prevPageBtn {
+    color: black;
+    float: left;
+    padding: 4px 10px;
+    background-color: #efe4a2;
+    text-decoration: none;
     border: 2px solid #222;
     margin: 0 4px;
   }
