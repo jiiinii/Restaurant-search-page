@@ -31,7 +31,7 @@ export default function BasicMap() {
       const places = new kakao.maps.services.Places();
       const pageBtn = document.querySelector(".pageBtn");
       const pageBox = document.querySelector(".pageBox");
-      places.keywordSearch(Value, (data, status, pagination) => {
+      places.keywordSearch(Value,(data, status, pagination) => {
           const resultEl = document.querySelector(".searchResult");
           resultEl.innerHTML = "";
           pageBtn.style.display = "block";
@@ -53,7 +53,7 @@ export default function BasicMap() {
 
             const paginationCheck = (tmp) => {
               pageBox.innerHTML = "";
-              tmp.forEach(function(index){
+              tmp.forEach(function (index) {
                 const parent = document.createElement("li");
                 const child = document.createElement("a");
                 parent.className = `${index}Btn`;
@@ -61,22 +61,22 @@ export default function BasicMap() {
                 parent.append(child);
                 child.append(`${index}`);
                 const idxBtn = pageBox.querySelector(`.${index}Btn`);
-                idxBtn.addEventListener("click", function(){
-                  if("nextPage" === index) {
+                idxBtn.addEventListener("click", function () {
+                  if ("next" === index) {
                     pagination.nextPage();
-                  } else if("prevPage" === index) {
+                  } else if ("prev" === index) {
                     pagination.prevPage();
                   }
-                })
-              })
-            }
+                });
+              });
+            };
 
-            if(pagination.hasNextPage && pagination.hasPrevPage){
-              paginationCheck(["prevPage","nextPage"]);
-            } else if(pagination.hasNextPage){
-              paginationCheck(["prev","nextPage"]);
-            } else if(pagination.hasPrevPage){
-              paginationCheck(["prevPage","next"]);
+            if (pagination.hasNextPage && pagination.hasPrevPage) {
+              paginationCheck(["prev", "next"]);
+            } else if (pagination.hasNextPage) {
+              paginationCheck(["next"]);
+            } else if (pagination.hasPrevPage) {
+              paginationCheck(["prev"]);
             }
 
           } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
@@ -233,6 +233,7 @@ export default function BasicMap() {
 
 const Fixation = styled.div`
   display: block;
+  margin-right: 80px;
 `;
 
 const SearchForm = styled.form`
@@ -241,7 +242,6 @@ const SearchForm = styled.form`
   margin-bottom: 20px;
   gap: 10px;
   align-items: baseline;
-  margin-right: 80px;
 
   .search-entry {
     background-color: #f5f5f5;
@@ -284,52 +284,35 @@ const SearchResult = styled.div`
 `;
 
 const PageButton = styled.div`
-  margin-top: 10px;
-  width: 465px;
-  text-align: center;
+  margin: 10px auto;
+  width: 145px;
+  text-align: right;
   display: none;
-
   `;
 
-  const PageBox = styled.div`
+const PageBox = styled.div`
   cursor: pointer;
   display: inline-block;
 
   .nextBtn {
     color: black;
-    float: right;
-    padding: 4px 10px;
-    text-decoration: none;
-    border: 2px solid #222;
-    margin: 0 4px;
-  }
-
-  .nextPageBtn {
-    color: black;
-    float: right;
     padding: 4px 10px;
     background-color: #efe4a2;
     text-decoration: none;
+    float: right;
+    position: relative;
     border: 2px solid #222;
     margin: 0 4px;
   }
 
   .prevBtn {
     color: black;
-    float: left;
-    padding: 4px 10px;
-    text-decoration: none;
-    border: 2px solid #222;
-    margin: 0 4px;
-  }
-
-  .prevPageBtn {
-    color: black;
-    float: left;
     padding: 4px 10px;
     background-color: #efe4a2;
     text-decoration: none;
+    float: left;
+    position: relative;
     border: 2px solid #222;
     margin: 0 4px;
   }
-`
+`;
