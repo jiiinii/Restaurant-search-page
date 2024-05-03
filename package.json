@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.3.3",
     "express": "^4.19.2",
+    "koa": "^2.15.3",
     "mongoose": "^8.3.3",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
@@ -45,5 +46,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/jiiinii/Restaurant-search-page",
+  "author": "ParkJinHui <jiinii0104@outlook.com>",
+  "license": "MIT"
 }
