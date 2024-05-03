@@ -91,7 +91,6 @@ const InfoDiv = styled.div`
   flex-direction: column;
   align-items: center;
 
-  position: fixed;
   bottom: 1.875em;
   left: 2.1875em;
 

@@ -205,3 +205,8 @@ code {
     font-weight: 400;
     font-style: normal;
   }
+
+  .categoryName {
+    font-size:14px;
+    color:#727272;
+  }

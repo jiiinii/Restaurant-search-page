@@ -29,12 +29,11 @@ export default function BasicMap() {
     } else {
       if (!map) return;
       const places = new kakao.maps.services.Places();
-      const pageBtn = document.querySelector(".pageBtn");
       const pageBox = document.querySelector(".pageBox");
       places.keywordSearch(Value,(data, status, pagination) => {
           const resultEl = document.querySelector(".searchResult");
           resultEl.innerHTML = "";
-          pageBtn.style.display = "block";
+          pageBox.style.display = "block";
 
           if (status === kakao.maps.services.Status.OK) {
             const bounds = new kakao.maps.LatLngBounds();
@@ -80,7 +79,7 @@ export default function BasicMap() {
             }
 
           } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-            pageBtn.style.display = "none";
+            pageBox.style.display = "none";
             alert("검색 결과가 존재하지 않습니다.");
             return;
           } else if (status === kakao.maps.services.Status.ERROR) {
@@ -113,7 +112,7 @@ export default function BasicMap() {
             resultList.innerHTML = `
             <div class="placeAndtype" style="display: flex;">
               <p class="placeName">${item.place_name}</p>&nbsp;
-              <p>${restaurantType}</p>
+              <p class="categoryName">${restaurantType}</p>
             </div>
             <p>주소: ${item.address_name}</p>
             <p>도로명: ${item.road_address_name}</p>
@@ -193,9 +192,7 @@ export default function BasicMap() {
           </div>
         </SearchForm>
         <SearchResult className="searchResult"></SearchResult>
-        <PageButton className="pageBtn">
           <PageBox className="pageBox"></PageBox>
-        </PageButton>
       </Fixation>
       <div className="myMap">
         <Map
@@ -262,7 +259,7 @@ const SearchForm = styled.form`
     line-height: 24px;
     display: inline-block;
     background-color: #efe4a2;
-    border-radius: 8px;
+    border-radåius: 8px;
     border: 2px solid #545454;
     box-sizing: border-box;
 
@@ -283,36 +280,22 @@ const SearchResult = styled.div`
   padding: 20px;
 `;
 
-const PageButton = styled.div`
-  margin: 10px auto;
-  width: 145px;
-  text-align: right;
-  display: none;
-  `;
-
 const PageBox = styled.div`
-  cursor: pointer;
-  display: inline-block;
-
+  display: inline-flex;
+  padding-top: 10px;
   .nextBtn {
-    color: black;
-    padding: 4px 10px;
-    background-color: #efe4a2;
-    text-decoration: none;
-    float: right;
-    position: relative;
-    border: 2px solid #222;
-    margin: 0 4px;
+    transform: translate(250px);
   }
-
   .prevBtn {
-    color: black;
+    transform: translate(190px);
+  }
+  li{
+    position: absolute;
+    cursor: pointer;
     padding: 4px 10px;
-    background-color: #efe4a2;
     text-decoration: none;
-    float: left;
-    position: relative;
+    background-color: #efe4a2;
+    color: black;
     border: 2px solid #222;
-    margin: 0 4px;
   }
 `;
