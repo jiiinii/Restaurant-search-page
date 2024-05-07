@@ -102,7 +102,9 @@ export default function BasicMap() {
             const resultList = document.createElement("li");
             resultList.className = "restaurant";
 
-            resultList.addEventListener("click", () => handleClick(marker));
+            resultList.addEventListener("click", () => {
+              handleClick(marker)
+            });
 
             const restaurantType = item.category_name
               ? item.category_name.split(">")[1]
@@ -124,6 +126,7 @@ export default function BasicMap() {
           }
 
           function handleClick(marker) {
+            console.log(`click event >>>`)
             setInfo(marker);
           }
         },
