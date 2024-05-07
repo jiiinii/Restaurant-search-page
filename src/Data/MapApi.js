@@ -104,6 +104,11 @@ export default function BasicMap() {
 
             resultList.addEventListener("click", () => {
               handleClick(marker)
+
+              $.ajax({
+                type: 'POST',
+                async: true,
+              })
             });
 
             const restaurantType = item.category_name
@@ -126,7 +131,6 @@ export default function BasicMap() {
           }
 
           function handleClick(marker) {
-            console.log(`click event >>>`)
             setInfo(marker);
           }
         },
