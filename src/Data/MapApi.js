@@ -10,6 +10,10 @@ export default function BasicMap() {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
+  const [item, setItem] = useState({
+    name: "",
+  });
+
   // 입력 폼 변화 감지하여 입력 값 관리
   const [Value, setValue] = useState("");
 
@@ -104,11 +108,6 @@ export default function BasicMap() {
 
             resultList.addEventListener("click", () => {
               handleClick(marker)
-
-              $.ajax({
-                type: 'POST',
-                async: true,
-              })
             });
 
             const restaurantType = item.category_name
@@ -132,6 +131,12 @@ export default function BasicMap() {
 
           function handleClick(marker) {
             setInfo(marker);
+            fetch(`/api/items`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            })
           }
         },
         { page: 1 }
