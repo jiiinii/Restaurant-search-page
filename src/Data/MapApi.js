@@ -135,8 +135,14 @@ export default function BasicMap() {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-              }
+              },
+              body: JSON.stringify({
+                user: {
+                  name: "place_name",
+                },
+              }),
             })
+            .then((marker) => marker.json())
           }
         },
         { page: 1 }

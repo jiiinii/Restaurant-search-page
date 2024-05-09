@@ -11,6 +11,10 @@ const RecentSearchHistory = () => {
           console.log(`response.data >>>`, response.data);
         })
         .catch((error) => console.error(`dddd>>> `, error));
+
+      axios.post("http://localhost:5000/api/items", {
+        name: "place_name"
+      })
     }, []);
   return (
     <>
