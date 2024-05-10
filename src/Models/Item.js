@@ -2,14 +2,11 @@
 const mongoose = require("mongoose");
 
 const itemSchema = new mongoose.Schema({
-  name: { type: String, required: true},
-},
-{
-  collection: 'Item'
-},);
+  name: { type: String, required: true}
+});
 
 itemSchema.statics.findAll = function () {
   return this.find({});
 }
 
-module.exports = mongoose.model("Item", itemSchema);
+module.exports = mongoose.model("user", itemSchema);

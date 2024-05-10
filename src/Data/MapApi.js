@@ -10,10 +10,6 @@ export default function BasicMap() {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
-  const [item, setItem] = useState({
-    name: "",
-  });
-
   // 입력 폼 변화 감지하여 입력 값 관리
   const [Value, setValue] = useState("");
 
@@ -107,7 +103,7 @@ export default function BasicMap() {
             resultList.className = "restaurant";
 
             resultList.addEventListener("click", () => {
-              handleClick(marker)
+              handleClick(marker, item)
             });
 
             const restaurantType = item.category_name
@@ -129,17 +125,15 @@ export default function BasicMap() {
             parent.appendChild(resultList);
           }
 
-          function handleClick(marker) {
+          function handleClick(marker, item) {
             setInfo(marker);
-            fetch(`/api/items`, {
+            fetch(`http://localhost:5000/api/items`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                user: {
-                  name: "place_name",
-                },
+                name: item.place_name
               }),
             })
             .then((marker) => marker.json())
