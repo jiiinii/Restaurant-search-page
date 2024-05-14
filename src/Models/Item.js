@@ -2,7 +2,8 @@
 const mongoose = require("mongoose");
 
 const itemSchema = new mongoose.Schema({
-  name: { type: String, required: true}
+  name: { type: String, required: true },
+  time: { type: String, required: true }
 });
 
 itemSchema.statics.findAll = function () {

@@ -133,7 +133,8 @@ export default function BasicMap() {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                name: item.place_name
+                name: item.place_name,
+                time: new Date().getTime()
               }),
             })
             .then((marker) => marker.json())

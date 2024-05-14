@@ -42,3 +42,12 @@ app.post("/api/items", async (req, res) => {
   const blog = new Item(req.body);
   await blog.save();
 });
+
+// app.delete(path, callback, [callback])
+app.delete("/delete", async(req, res) => {
+  try {
+    //
+  } catch (error) {
+    res.status(500).send("서버 오류");
+  }
+})
