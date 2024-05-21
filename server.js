@@ -23,7 +23,7 @@ const Item = require("./src/Models/Item");
 app.get("/api/items", async (req, res) => {
   console.log(`server.js >>>`);
   try {
-    const items = await Item.find();
+    const items = await Item.find().limit(7);
     res.json(items);
   } catch (error) {
     console.log(error);
@@ -45,9 +45,17 @@ app.post("/api/items", async (req, res) => {
 
 // app.delete(path, callback, [callback])
 app.delete("/delete", async(req, res) => {
-  try {
-    //
-  } catch (error) {
-    res.status(500).send("서버 오류");
-  }
+  req.body.name = parseInt(req.body.name);
+  console.log(`req.body_ delete >>>`, req.body);
+  Item.db.collection('post').deleteMany(req.body, function(){
+    console.log('삭제 완료');
+    
+  })
+  // try {
+  //   await Item.deleteMany({_id : req.params.id });
+  //   res.sendStatus(204);
+  // } catch {
+  //   res.sendStatus(404);
+  //   console.log('error');
+  // }
 })

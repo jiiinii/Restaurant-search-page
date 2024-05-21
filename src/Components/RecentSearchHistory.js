@@ -16,8 +16,7 @@ const RecentSearchHistory = () => {
 
   const allKeywordRemove = (response) => {
     if (window.confirm(`모두 삭제할까요?`)) {
-      // 수정 요망
-      fetch(`http://localhost:5000/delete`, {
+      fetch(`http://localhost:5000/delete?docid=`, {
         method:'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -27,8 +26,9 @@ const RecentSearchHistory = () => {
           time: new Date().getTime()
         }),
       })
-      .then((response) => response.json())
-      console.log(`삭제되었습니다`);
+      .then((response) => {
+        response.text()
+      })
     }
   }
 
@@ -47,7 +47,7 @@ const RecentSearchHistory = () => {
                 <p>{title.name}</p>
                 </div>
               )
-            })}
+            }).reverse()}
           </div>
         </ListBox>
       </Outside>

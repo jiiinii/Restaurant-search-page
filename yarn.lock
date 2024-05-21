@@ -4092,6 +4092,11 @@ ci-info@^3.2.0:
   resolved "https://registry.npmjs.org/ci-info/-/ci-info-3.9.0.tgz"
   integrity sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==
 
+circular-json@^0.5.9:
+  version "0.5.9"
+  resolved "https://registry.npmjs.org/circular-json/-/circular-json-0.5.9.tgz"
+  integrity sha512-4ivwqHpIFJZBuhN3g/pEcdbnGUywkBblloGbkglyloVjjR3uT6tieI89MVOfbP2tHX5sgb01FuLgAOzebNlJNQ==
+
 cjs-module-lexer@^1.0.0:
   version "1.2.3"
   resolved "https://registry.npmjs.org/cjs-module-lexer/-/cjs-module-lexer-1.2.3.tgz"
@@ -7566,6 +7571,11 @@ joi@^17.2.1:
     "@sideway/formula" "^3.0.1"
     "@sideway/pinpoint" "^2.0.0"
 
+jquery@^3.7.1:
+  version "3.7.1"
+  resolved "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
+  integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz"
@@ -8417,7 +8427,12 @@ mongodb@6.5.0:
     bson "^6.4.0"
     mongodb-connection-string-url "^3.0.0"
 
-mongoose@^8.3.4:
+mongoose-delete@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/mongoose-delete/-/mongoose-delete-1.0.2.tgz"
+  integrity sha512-W+p9ULLiYHcEz77wQECp6gNnh2NcXf30KRIE3nAyjjsStqmBKJDL5eXTnX0xerGG2gCGx6mI7bO3+ch88tQ+tg==
+
+mongoose@^8.3.4, "mongoose@5.x || 6.x || 7.x || 8.x":
   version "8.3.4"
   resolved "https://registry.npmjs.org/mongoose/-/mongoose-8.3.4.tgz"
   integrity sha512-ckBaBzKgtWgCalW/LPkcBsR3wKCOYEJ9jLFPmYCYV7TLStpETY757ELx8/1stL11+6HxLLVffawBffXzd0Y7YA==
