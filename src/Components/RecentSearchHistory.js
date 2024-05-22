@@ -9,28 +9,24 @@ const RecentSearchHistory = () => {
       .get("http://localhost:5000/api/items")
       .then((response) => {
         setItems(response.data);
-        console.log(`response.data >>>`, response.data);
       })
       .catch((error) => console.error(error));
   }, []);
 
-  const allKeywordRemove = (response) => {
+  const allKeywordRemove = () => {
     if (window.confirm(`모두 삭제할까요?`)) {
-      fetch(`http://localhost:5000/delete?docid=`, {
-        method:'DELETE',
+      fetch(`http://localhost:5000/delete`, {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: response.data,
-          time: new Date().getTime()
+          name: items[0].name,
+          time: items[0].time,
         }),
       })
-      .then((response) => {
-        response.text()
-      })
     }
-  }
+  };
 
   return (
     <>
@@ -40,15 +36,25 @@ const RecentSearchHistory = () => {
           <h4 onClick={allKeywordRemove}>전체삭제</h4>
         </PlaceList>
         <ListBox>
-          <div className="recentList">
-            {items.map((title, i) => {
-              return (
-                <div className="recentListName" key={i}>
-                <p>{title.name}</p>
-                </div>
-              )
-            }).reverse()}
-          </div>
+          {items[0] ? (
+            <div className="recentList">
+              {items
+                .map((title, i) => {
+                  return (
+                    <div className="recentListName" key={i}>
+                      <p>{title.name}</p>
+                    </div>
+                  );
+                })
+                .reverse()}
+            </div>
+          ) : (
+            <div className="recentList">
+              <div className="recentListName">
+                <p>최근 검색 기록이 없습니다.</p>
+              </div>
+            </div>
+          )}
         </ListBox>
       </Outside>
     </>
@@ -114,7 +120,7 @@ const ListBox = styled.div`
   }
 
   .delete {
-    background-color:transparent;
+    background-color: transparent;
     border: none;
   }
 `;

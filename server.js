@@ -11,11 +11,13 @@ require("dotenv").config({ path: "variable.env" });
 const MONGODB_URL =
   "mongodb+srv://jiiinhuiii0104:niD4HQXWphfczZOl@cluster0.cnekfui.mongodb.net/";
 
-  const connection = mongoose
-    .connect(MONGODB_URL, { useNewUrlParser: true })
-    .then(() => {console.log("Successfully connect.");})
-    .catch((e) => console.log(e));
-    
+const connection = mongoose
+  .connect(MONGODB_URL, { useNewUrlParser: true })
+  .then(() => {
+    console.log("Successfully connect.");
+  })
+  .catch((e) => console.log(e));
+
 // API 라우트 생성
 const Item = require("./src/Models/Item");
 
@@ -23,7 +25,7 @@ const Item = require("./src/Models/Item");
 app.get("/api/items", async (req, res) => {
   console.log(`server.js >>>`);
   try {
-    const items = await Item.find().limit(7);
+    const items = await Item.find();
     res.json(items);
   } catch (error) {
     console.log(error);
@@ -44,18 +46,17 @@ app.post("/api/items", async (req, res) => {
 });
 
 // app.delete(path, callback, [callback])
-app.delete("/delete", async(req, res) => {
-  req.body.name = parseInt(req.body.name);
-  console.log(`req.body_ delete >>>`, req.body);
-  Item.db.collection('post').deleteMany(req.body, function(){
-    console.log('삭제 완료');
-    
-  })
-  // try {
-  //   await Item.deleteMany({_id : req.params.id });
-  //   res.sendStatus(204);
-  // } catch {
-  //   res.sendStatus(404);
-  //   console.log('error');
-  // }
-})
+app.delete("/delete", async (req, res) => {
+  console.log(`delete server >>>>>>>> `);
+  console.log("req.body", req.body);
+  try {
+    const result = await Item.deleteMany({
+      name: req.body.name,
+      time: req.body.time,
+    });
+    console.log(`result >>>>>>> `, result);
+  } catch {
+    res.sendStatus(404);
+    console.log("error");
+  }
+});
