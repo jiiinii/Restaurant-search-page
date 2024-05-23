@@ -45,16 +45,12 @@ app.post("/api/items", async (req, res) => {
   await blog.save();
 });
 
-// app.delete(path, callback, [callback])
+// 데이터 삭제
 app.delete("/delete", async (req, res) => {
-  console.log(`delete server >>>>>>>> `);
   console.log("req.body", req.body);
   try {
-    const result = await Item.deleteMany({
-      name: req.body.name,
-      time: req.body.time,
-    });
-    console.log(`result >>>>>>> `, result);
+    const deleteResult = await Item.deleteMany({});
+    console.log(`result >>>>>>> `, deleteResult);
   } catch {
     res.sendStatus(404);
     console.log("error");

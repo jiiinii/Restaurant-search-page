@@ -20,11 +20,11 @@ const RecentSearchHistory = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name: items[0].name,
-          time: items[0].time,
-        }),
-      })
+        // body: JSON.stringify({
+        //   name: items[0].name,
+        //   time: items[0].time,
+        // }),
+      }).then(setItems([]));
     }
   };
 
