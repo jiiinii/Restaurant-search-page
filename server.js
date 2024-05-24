@@ -5,6 +5,7 @@ const app = express();
 app.use(cors());
 
 const PORT = process.env.PORT || 5000;
+// 특정 포트에서 대기
 app.listen(PORT, () => console.log(`서버가 포트 ${PORT}에서 실행 중입니다`));
 require("dotenv").config({ path: "variable.env" });
 
@@ -22,6 +23,7 @@ const connection = mongoose
 const Item = require("./src/Models/Item");
 
 // 데이터 가져오기
+// try catch : 예외발생 상황 지정
 app.get("/api/items", async (req, res) => {
   console.log(`server.js >>>`);
   try {
