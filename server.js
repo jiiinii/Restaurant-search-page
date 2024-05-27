@@ -51,10 +51,7 @@ app.post("/api/items", async (req, res) => {
 app.delete("/deleteKeyword", async (req, res) => {
   console.log("req.body", req.body);
   try {
-    const deleteKeyword = await ServerSchema.deleteOne({
-      name: String,
-      time: Number
-    });
+    const deleteKeyword = await ServerSchema.deleteOne(req.body);
     console.log(`deleteKeyword >>> `, deleteKeyword);
   } catch {
     res.sendStatus(404);

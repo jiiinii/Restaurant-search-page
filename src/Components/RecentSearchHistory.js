@@ -30,7 +30,6 @@ const RecentSearchHistory = () => {
   };
 
   const keywordDelte = (x) => {
-    alert(`삭제`);
     fetch(`http://localhost:5000/deleteKeyword`, {
         method: "DELETE",
         headers: {
