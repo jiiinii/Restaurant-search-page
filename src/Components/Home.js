@@ -4,7 +4,7 @@ import ProducerInfo from "./ProducerInfo";
 import RecentSearchHistory from "./RecentSearchHistory";
 import Nav from "react-bootstrap/Nav";
 
-const Home = () => {
+const HomeNav = () => {
   return (
     <>
       <Fixation>
@@ -38,7 +38,7 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeNav;
 
 const Fixation = styled.div`
   width: 1300px;

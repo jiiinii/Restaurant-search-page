@@ -20,7 +20,7 @@ const RecentSearchHistory = () => {
   const allKeywordRemove = () => {
     if (window.confirm(`모두 삭제할까요?`)) {
       // fetch : 서버로 네트워크 요청을 보내고 응답을 받을 수 있게 해줌.
-      fetch(`http://localhost:5000/delete`, {
+      fetch(`http://localhost:5000/deleteAll`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -29,8 +29,18 @@ const RecentSearchHistory = () => {
     }
   };
 
-  const keywordDeelte = () => {
+  const keywordDelte = (x) => {
     alert(`삭제`);
+    fetch(`http://localhost:5000/deleteKeyword`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: items[x].name,
+          time: items[x].time,
+        })
+      }).then(setItems([]));
   }
 
   return (
@@ -41,13 +51,13 @@ const RecentSearchHistory = () => {
           <h4 onClick={allKeywordRemove}>전체삭제</h4>
         </PlaceList>
         <ListBox>
-          {items[0] ? ( // items에 값이 있으면? 데이터 출력(true) : 텍스트 출력(false)
+          {items.length ? ( // items에 값이 있으면? 데이터 출력(true) : 텍스트 출력(false)
             <div className="recentList">
               {items
                 .map((title, i) => {
                   return (
                     <div className="recentListName" key={i}>
-                      <p>{title.name}<IoClose onClick={keywordDeelte}/></p>
+                      <p>{title.name}<IoClose onClick={() => keywordDelte(i)}/></p>
                     </div>
                   );
                 })

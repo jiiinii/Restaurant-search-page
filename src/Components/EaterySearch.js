@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
-import MapApi from "../Data/MapApi";
+import KakaoMapEvent from "../Data/KakaoMapEvent";
 import ProducerInfo from "./ProducerInfo";
 
 const eaterySearch = () => {
@@ -27,7 +27,7 @@ const eaterySearch = () => {
           </header>
         </Lump>
         <SearchForInformation>
-          <MapApi />
+          <KakaoMapEvent />
         </SearchForInformation>
       </Fixation>
       <ProducerInfo />

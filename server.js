@@ -20,14 +20,14 @@ const connection = mongoose
   .catch((e) => console.log(e));
 
 // API 라우트 생성
-const Item = require("./src/Models/Item");
+const ServerSchema = require("./src/Models/ServerSchema");
 
 // 데이터 가져오기
 // try catch : 예외발생 상황 지정
 app.get("/api/items", async (req, res) => {
   console.log(`server.js >>>`);
   try {
-    const items = await Item.find();
+    const items = await ServerSchema.find();
     res.json(items);
   } catch (error) {
     console.log(error);
@@ -43,16 +43,31 @@ app.post("/api/items", async (req, res) => {
   console.log("req.body", req.body);
 
   // DB 데이터 저장
-  const blog = new Item(req.body);
+  const blog = new ServerSchema(req.body);
   await blog.save();
 });
 
-// 데이터 삭제
-app.delete("/delete", async (req, res) => {
+// 데이터 부분 삭제
+app.delete("/deleteKeyword", async (req, res) => {
   console.log("req.body", req.body);
   try {
-    const deleteResult = await Item.deleteMany({});
-    console.log(`result >>>>>>> `, deleteResult);
+    const deleteKeyword = await ServerSchema.deleteOne({
+      name: String,
+      time: Number
+    });
+    console.log(`deleteKeyword >>> `, deleteKeyword);
+  } catch {
+    res.sendStatus(404);
+    console.log("error");
+  }
+});
+
+// 데이터 전체 삭제
+app.delete("/deleteAll", async (req, res) => {
+  console.log("req.body", req.body);
+  try {
+    const deleteAll = await ServerSchema.deleteMany({});
+    console.log(`result >>>>>>> `, deleteAll);
   } catch {
     res.sendStatus(404);
     console.log("error");
