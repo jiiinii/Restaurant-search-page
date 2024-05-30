@@ -6,30 +6,30 @@ import ProducerInfo from "./ProducerInfo";
 import RecentSearchHistory from "./RecentSearchHistory";
 
 const HomeNav = () => {
-  const images = ["mainPhoto1.png", "mainPhoto2.png", "mainPhoto3.png"];
+  const images = ["../img/mainPhoto1.png", "../img/mainPhoto2.png", "../img/mainPhoto3.png"];
 
   // 수동
   const [curSlide, setCurSlide] = useState(0);
 
-  const FIRST_SLIDE_INDEX = 0; // 이미지 슬라이드의 시작 번호
-  const LAST_SLIDE_INDEX = images.length - 1; // 이미지 슬라이드의 끝 번호
-  const MOVE_SLIDE_INDEX = 1; // 이미지 슬라이드 이동 값
+  const firstSlideIndex = 0; // 이미지 슬라이드의 시작 번호
+  const lastSlideIndex = images.length - 1; // 이미지 슬라이드의 끝 번호
+  const moveSlideIndex = 1; // 이미지 슬라이드 이동 값
 
-  const manualMoveToSlide = (value) => {
+  const moveToSlide = (value) => {
     if (value === 'next') {
       // 슬라이드 끝점에 도달했을 때 curSlide의 값을 바꿔 처음으로 돌아가게 함.
       setCurSlide((prevState) =>
-        prevState < LAST_SLIDE_INDEX
-          ? prevState + MOVE_SLIDE_INDEX
-          : FIRST_SLIDE_INDEX
+        prevState < lastSlideIndex
+          ? prevState + moveSlideIndex
+          : firstSlideIndex
       );
     }
     if (value === 'prev') {
       // 슬라이드 시작점에 도달했을 때 curSlide의 값을 바꿔 마지막으로 돌아가게 함.
       setCurSlide((prevState) =>
-        prevState > FIRST_SLIDE_INDEX
-          ? prevState - MOVE_SLIDE_INDEX
-          : LAST_SLIDE_INDEX
+        prevState > firstSlideIndex
+          ? prevState - moveSlideIndex
+          : lastSlideIndex
       );
     }
   };
@@ -45,9 +45,9 @@ const HomeNav = () => {
     setIntervalId(
       setInterval(() => {
         setCurSlide((prevState) =>
-          prevState < LAST_SLIDE_INDEX
-            ? prevState + MOVE_SLIDE_INDEX
-            : FIRST_SLIDE_INDEX
+          prevState < lastSlideIndex
+            ? prevState + moveSlideIndex
+            : firstSlideIndex
         );
       }, 3000)
     );
@@ -79,10 +79,6 @@ const HomeNav = () => {
           </header>
           <main>
             <div className="imageTrain">
-              <IoIosArrowBack
-                className="prev-button"
-                onClick={() => manualMoveToSlide('prev')}
-              />
               <div className="imageShow">
                 {images.map((item, index) => (
                   <div
@@ -93,13 +89,17 @@ const HomeNav = () => {
                       transition: "all 0.4s ease-in-out",
                     }}
                   >
-                    {item}
+                    <img src={item} alt="imgs"></img>
                   </div>
                 ))}
               </div>
+              <IoIosArrowBack
+                className="prev-button"
+                onClick={() => moveToSlide('prev')}
+              />
               <IoIosArrowForward
                 className="next-button"
-                onClick={() => manualMoveToSlide('next')}
+                onClick={() => moveToSlide('next')}
               />
             </div>
           </main>
@@ -149,12 +149,12 @@ const Lump = styled.div`
   .imageTrain {
     display: flex;
     justify-content: center;
-    margin: 0 auto;
 
     .prev-button {
       position: absolute;
       top: 350px;
       transform: translate(-630px);
+      color: #626262;
       width: 40px;
       height: 40px;
       &:hover {
@@ -166,6 +166,7 @@ const Lump = styled.div`
       position: absolute;
       top: 350px;
       transform: translate(630px);
+      color: #626262;
       width: 40px;
       height: 40px;
       &:hover {
@@ -179,8 +180,7 @@ const Lump = styled.div`
     width: 1300px;
     height: 485px;
     overflow: hidden;
-    align-items: center;
-    border: 1px red solid;
+    border-radius: 10px;
     text-align: center;
     font-size: 40px;
   }

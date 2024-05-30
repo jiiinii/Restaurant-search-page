@@ -31,7 +31,7 @@ const RecentSearchHistory = () => {
   };
 
   const keywordDelte = (x) => {
-    const keywords = items.filter((word) => word !== items[x]);
+    const keywords = items.filter((word) => word !== items[x]); // Splice 함수 사용
     fetch(`http://localhost:5000/deleteKeyword/`, {
         method: "DELETE",
         headers: {
