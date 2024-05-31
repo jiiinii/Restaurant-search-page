@@ -1,22 +1,16 @@
 import React from "react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
 import ProducerInfo from "./ProducerInfo";
 import RecentSearchHistory from "./RecentSearchHistory";
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { StyledSlider, Box } from "./Box.styled";
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 const HomeNav = () => {
-  const settings = {
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    pauseOnHover: true,
-  };
   return (
     <>
       <Fixation>
@@ -40,19 +34,24 @@ const HomeNav = () => {
           <main>
             <div className="imageTrain">
               <div className="imageShow">
-                <StyledSlider {...settings}>
-                  <Box>
-                    <div>
-                      <img src="../img/mainPhoto1.png" alt="img1" />
-                    </div>
-                  </Box>
-                  <div>
-                    <img src="../img/mainPhoto2.png" alt="img2" />
-                  </div>
-                  <div>
-                    <img src="../img/mainPhoto3.png" alt="img3" />
-                  </div>
-                </StyledSlider>
+                <Swiper
+                  spaceBetween={30}
+                  centeredSlides={true}
+                  autoplay={{
+                    delay: 2500,
+                    disableOnInteraction: false,
+                  }}
+                  pagination={{
+                    clickable: true,
+                  }}
+                  navigation={true}
+                  modules={[Autoplay, Pagination, Navigation]}
+                  className="mySwiper"
+                >
+                <SwiperSlide><img src="../img/mainPhoto1.png" alt="img1"></img></SwiperSlide>
+                <SwiperSlide><img src="../img/mainPhoto2.png" alt="img2"></img></SwiperSlide>
+                <SwiperSlide><img src="../img/mainPhoto3.png" alt="img3"></img></SwiperSlide>
+                </Swiper>
               </div>
             </div>
           </main>
