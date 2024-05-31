@@ -1,62 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import ProducerInfo from "./ProducerInfo";
 import RecentSearchHistory from "./RecentSearchHistory";
 
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { StyledSlider, Box } from "./Box.styled";
+
 const HomeNav = () => {
-  const images = ["../img/mainPhoto1.png", "../img/mainPhoto2.png", "../img/mainPhoto3.png"];
-
-  // 수동
-  const [curSlide, setCurSlide] = useState(0);
-
-  const firstSlideIndex = 0; // 이미지 슬라이드의 시작 번호
-  const lastSlideIndex = images.length - 1; // 이미지 슬라이드의 끝 번호
-  const moveSlideIndex = 1; // 이미지 슬라이드 이동 값
-
-  const moveToSlide = (value) => {
-    if (value === 'next') {
-      // 슬라이드 끝점에 도달했을 때 curSlide의 값을 바꿔 처음으로 돌아가게 함.
-      setCurSlide((prevState) =>
-        prevState < lastSlideIndex
-          ? prevState + moveSlideIndex
-          : firstSlideIndex
-      );
-    }
-    if (value === 'prev') {
-      // 슬라이드 시작점에 도달했을 때 curSlide의 값을 바꿔 마지막으로 돌아가게 함.
-      setCurSlide((prevState) =>
-        prevState > firstSlideIndex
-          ? prevState - moveSlideIndex
-          : lastSlideIndex
-      );
-    }
+  const settings = {
+    infinite: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    pauseOnHover: true,
   };
-
-  // 자동
-  const [intervalId, setIntervalId] = useState(null);
-
-  const autoMoveSlide = () => {
-    if (intervalId !== null) {
-      clearInterval(intervalId);
-    }
-
-    setIntervalId(
-      setInterval(() => {
-        setCurSlide((prevState) =>
-          prevState < lastSlideIndex
-            ? prevState + moveSlideIndex
-            : firstSlideIndex
-        );
-      }, 3000)
-    );
-  }
-
-  useState(() => {
-    autoMoveSlide();
-    return () => clearInterval(intervalId);
-  }, []);
   return (
     <>
       <Fixation>
@@ -80,27 +40,20 @@ const HomeNav = () => {
           <main>
             <div className="imageTrain">
               <div className="imageShow">
-                {images.map((item, index) => (
-                  <div
-                    className="compartment"
-                    key={index}
-                    style={{
-                      transform: `translateX(${-1300 * curSlide}px)`, // 현재 이미지 번호의 값을 넣어준다.
-                      transition: "all 0.4s ease-in-out",
-                    }}
-                  >
-                    <img src={item} alt="imgs"></img>
+                <StyledSlider {...settings}>
+                  <Box>
+                    <div>
+                      <img src="../img/mainPhoto1.png" alt="img1" />
+                    </div>
+                  </Box>
+                  <div>
+                    <img src="../img/mainPhoto2.png" alt="img2" />
                   </div>
-                ))}
+                  <div>
+                    <img src="../img/mainPhoto3.png" alt="img3" />
+                  </div>
+                </StyledSlider>
               </div>
-              <IoIosArrowBack
-                className="prev-button"
-                onClick={() => moveToSlide('prev')}
-              />
-              <IoIosArrowForward
-                className="next-button"
-                onClick={() => moveToSlide('next')}
-              />
             </div>
           </main>
         </Lump>
