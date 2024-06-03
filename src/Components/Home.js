@@ -1,16 +1,21 @@
 import React from "react";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import styled from "styled-components";
+import Slider from "react-slick";
 import Nav from "react-bootstrap/Nav";
 import ProducerInfo from "./ProducerInfo";
 import RecentSearchHistory from "./RecentSearchHistory";
-
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const HomeNav = () => {
+  const settings = {
+    dots: true,
+    infinite: true, // 무한슬라이더 여부
+    slidesToShow: 1, // 한번에 몇개 슬라이드 보여줄 것인지
+    slidesToScroll: 1,
+    autoplay: true, // 자동재생 여부
+    autoplaySpeed: 3000,
+  };
   return (
     <>
       <Fixation>
@@ -32,28 +37,17 @@ const HomeNav = () => {
             </ul>
           </header>
           <main>
-            <div className="imageTrain">
-              <div className="imageShow">
-                <Swiper
-                  spaceBetween={30}
-                  centeredSlides={true}
-                  autoplay={{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                  }}
-                  pagination={{
-                    clickable: true,
-                  }}
-                  navigation={true}
-                  modules={[Autoplay, Pagination, Navigation]}
-                  className="mySwiper"
-                >
-                <SwiperSlide><img src="../img/mainPhoto1.png" alt="img1"></img></SwiperSlide>
-                <SwiperSlide><img src="../img/mainPhoto2.png" alt="img2"></img></SwiperSlide>
-                <SwiperSlide><img src="../img/mainPhoto3.png" alt="img3"></img></SwiperSlide>
-                </Swiper>
+            <StyledSlider {...settings}>
+              <div>
+                <img src="../img/mainPhoto1.png" alt="img1" />
               </div>
-            </div>
+              <div>
+                <img src="../img/mainPhoto2.png" alt="img2" />
+              </div>
+              <div>
+                <img src="../img/mainPhoto3.png" alt="img3" />
+              </div>
+            </StyledSlider>
           </main>
         </Lump>
         <RecentSearchHistory />
@@ -98,50 +92,20 @@ const Lump = styled.div`
     margin: 10px 20px 10px;
   }
 
-  .imageTrain {
-    display: flex;
-    justify-content: center;
-
-    .prev-button {
-      position: absolute;
-      top: 350px;
-      transform: translate(-630px);
-      color: #626262;
-      width: 40px;
-      height: 40px;
-      &:hover {
-        cursor: pointer;
-      }
-    }
-
-    .next-button {
-      position: absolute;
-      top: 350px;
-      transform: translate(630px);
-      color: #626262;
-      width: 40px;
-      height: 40px;
-      &:hover {
-        cursor: pointer;
-      }
-    }
-  }
-
-  .imageShow {
-    display: flex;
-    width: 1300px;
-    height: 485px;
-    overflow: hidden;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 40px;
-  }
-
   .compartment {
     width: 100%;
     height: 300px;
     flex-shrink: 0;
     font-size: 40px;
     text-align: center;
+  }
+`;
+
+const StyledSlider = styled(Slider)`
+  .slick-slide div {
+    outline: none;
+    width: 1300%;
+    margin: 0 auto;
+    border-radius: 10px;
   }
 `;
