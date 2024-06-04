@@ -210,3 +210,7 @@ code {
     font-size:14px;
     color:#727272;
   }
+
+  .slick-list {
+    border-radius: 10px;
+  }

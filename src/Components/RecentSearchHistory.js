@@ -7,13 +7,11 @@ const RecentSearchHistory = () => {
   // items : 현재 상태 값. 초기에는 useState의 인수로 전달된 값([])이 할당
   // setItems : 상태를 업데이트할 수 있는 함수
   const [items, setItems] = useState([]);
-  console.log(`items >>> `, items);
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/items")
       .then((response) => {
         setItems(response.data);
-        console.log(`response.data >>> `, response.data);
       })
       .catch((error) => console.error(error));
   }, []);
@@ -30,18 +28,18 @@ const RecentSearchHistory = () => {
     }
   };
 
-  const keywordDelte = (x) => {
-    const keywords = items.filter((word) => word !== items[x]); // Splice 함수 사용
+  const keywordDelete = (x) => {
+    const keywords = items.splice(x, 1);
     fetch(`http://localhost:5000/deleteKeyword/`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: items[x].name,
-          time: items[x].time,
+          name: keywords[0].name,
+          time: keywords[0].time,
         })
-      }).then(setItems(keywords));
+      }).then(setItems([...items]));
   }
 
   return (
@@ -58,7 +56,7 @@ const RecentSearchHistory = () => {
                 .map((title, i) => {
                   return (
                     <div className="recentListName" key={i}>
-                      <p>{title.name}<IoClose className= "close" onClick={() => keywordDelte(i)}/></p>
+                      <p>{title.name}<IoClose className= "close" onClick={keywordDelete}/></p>
                     </div>
                   );
                 })

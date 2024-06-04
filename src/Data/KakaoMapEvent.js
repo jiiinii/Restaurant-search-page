@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
+// import { useLocation, useHistory } from 'react-router-dom';
 import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
