@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
-// import { useLocation, useHistory } from 'react-router-dom';
+// import { useParams } from "react-router-dom";
 import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
 export default function BasicMap() {
   UseKakaoLoader();
+
+  // const params = useParams();
+  // const detailVal = params.Value;
+  // console.log(`detailVal >>> `, detailVal);
 
   const { kakao } = window; // window 객체로부터 스크립트에서 로드한 kakao api를 가져옴
   const [info, setInfo] = useState();
@@ -37,13 +41,14 @@ export default function BasicMap() {
       const places = new kakao.maps.services.Places();
       const pageBox = document.querySelector(".pageBox");
       places.keywordSearch(Value, (data, status, pagination) => {
+          console.log(`value >>> `, Value);
+          console.log(`data >>> `, data);
           const resultEl = document.querySelector(".searchResult");
           resultEl.innerHTML = "";
           pageBox.style.display = "block";
 
           // 지도 API의 마커객체와 그리기 요소를 쉽게 지도 위에 그릴 수 있도록 기능을 제공
           if (status === kakao.maps.services.Status.OK) {
-
             // WGS84 좌표계에서 사각영역 정보를 표현하는 객체를 생성
             const bounds = new kakao.maps.LatLngBounds();
             // 검색 시 마커 보이기
