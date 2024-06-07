@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
-// import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
 export default function BasicMap() {
   UseKakaoLoader();
-
-  // const params = useParams();
-  // const detailVal = params.Value;
-  // console.log(`detailVal >>> `, detailVal);
 
   const { kakao } = window; // window 객체로부터 스크립트에서 로드한 kakao api를 가져옴
   const [info, setInfo] = useState();
@@ -18,6 +14,8 @@ export default function BasicMap() {
 
   // 입력 폼 변화 감지하여 입력 값 관리
   const [Value, setValue] = useState("");
+
+  const navigate = useNavigate();
 
   // 검색 기능
   const keywordChange = (e) => {
@@ -43,6 +41,7 @@ export default function BasicMap() {
       places.keywordSearch(Value, (data, status, pagination) => {
           console.log(`value >>> `, Value);
           console.log(`data >>> `, data);
+
           const resultEl = document.querySelector(".searchResult");
           resultEl.innerHTML = "";
           pageBox.style.display = "block";
@@ -156,6 +155,8 @@ export default function BasicMap() {
               }),
             }).then((marker) => marker.json());
           }
+
+          navigate(`/search/${Value}`);
         },
         { page: 1 }
       );

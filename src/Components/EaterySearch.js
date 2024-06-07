@@ -20,7 +20,7 @@ const eaterySearch = () => {
                   <Nav.Link href="/">홈</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link href="/search/:Value">맛집 찾기</Nav.Link>
+                  <Nav.Link href="/search">맛집 찾기</Nav.Link>
                 </Nav.Item>
               </Nav>
             </ul>
