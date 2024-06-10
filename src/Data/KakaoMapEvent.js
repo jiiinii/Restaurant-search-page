@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
@@ -14,8 +14,11 @@ export default function BasicMap() {
 
   // 입력 폼 변화 감지하여 입력 값 관리
   const [Value, setValue] = useState("");
-
+  // url에 검색 키워드 추가옵션.
   const navigate = useNavigate();
+
+  const params = useParams();
+  console.log(`params >>> `, params);
 
   // 검색 기능
   const keywordChange = (e) => {
@@ -27,7 +30,6 @@ export default function BasicMap() {
   const submitKeyword = (e) => {
     e.preventDefault();
   };
-  
   // 검색 버튼
   const valueChecker = () => {
     if (Value === "") {
