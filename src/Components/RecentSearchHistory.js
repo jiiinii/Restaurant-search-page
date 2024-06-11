@@ -28,19 +28,19 @@ const RecentSearchHistory = () => {
     }
   };
 
-  const keywordDelete = (x) => {
-    const keywords = items.splice(x, 1);
+  const keywordDelte = (x) => {
+    const keywords = items.filter((word) => word !== items[x]);
     fetch(`http://localhost:5000/deleteKeyword/`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: keywords[0].name,
-          time: keywords[0].time,
-        })
-      }).then(setItems([...items]));
-  }
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: items[x].name,
+        time: items[x].time,
+      }),
+    }).then(setItems(keywords));
+  };
 
   return (
     <>
@@ -56,7 +56,13 @@ const RecentSearchHistory = () => {
                 .map((title, i) => {
                   return (
                     <div className="recentListName" key={i}>
-                      <p>{title.name}<IoClose className= "close" onClick={keywordDelete}/></p>
+                      <p>
+                        {title.name}
+                        <IoClose
+                          className="close"
+                          onClick={() => keywordDelte(i)}
+                        />
+                      </p>
                     </div>
                   );
                 })
@@ -139,7 +145,7 @@ const ListBox = styled.div`
   }
 
   .close {
-    &:hover{
+    &:hover {
       cursor: pointer;
     }
   }

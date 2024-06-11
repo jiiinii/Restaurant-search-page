@@ -3,8 +3,13 @@ import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
 import KakaoMapEvent from "../Data/KakaoMapEvent";
 import ProducerInfo from "./ProducerInfo";
+import { useParams } from 'react-router-dom';
 
-const eaterySearch = () => {
+const EaterySearch = () => {
+  const params = useParams();
+  console.log(`params result >>> `, params.result);
+  
+
   return (
     <>
       <Fixation>
@@ -35,7 +40,7 @@ const eaterySearch = () => {
   );
 };
 
-export default eaterySearch;
+export default EaterySearch;
 
 const Fixation = styled.div`
   width: 1300px;

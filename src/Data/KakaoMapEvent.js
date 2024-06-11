@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
@@ -17,8 +17,9 @@ export default function BasicMap() {
   // url에 검색 키워드 추가옵션.
   const navigate = useNavigate();
 
-  const params = useParams();
-  console.log(`params >>> `, params);
+  const getUrlParams = () => {
+    const url = new URL(window.location.href);
+  }
 
   // 검색 기능
   const keywordChange = (e) => {
@@ -157,8 +158,7 @@ export default function BasicMap() {
               }),
             }).then((marker) => marker.json());
           }
-
-          navigate(`/search/${Value}`);
+            navigate(`/search/${Value}`);
         },
         { page: 1 }
       );
