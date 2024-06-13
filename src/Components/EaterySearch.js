@@ -3,13 +3,10 @@ import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
 import KakaoMapEvent from "../Data/KakaoMapEvent";
 import ProducerInfo from "./ProducerInfo";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
 const EaterySearch = () => {
   const params = useParams();
-  console.log(`params result >>> `, params.result);
-  
-
   return (
     <>
       <Fixation>
@@ -32,7 +29,7 @@ const EaterySearch = () => {
           </header>
         </Lump>
         <SearchForInformation>
-          <KakaoMapEvent />
+          <KakaoMapEvent name = {params.result}/>
         </SearchForInformation>
       </Fixation>
       <ProducerInfo />

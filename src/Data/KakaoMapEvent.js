@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
-export default function BasicMap() {
+function KakaoMapEvent({name}) {
+  console.log(`name >>> `, name);
   UseKakaoLoader();
 
   const { kakao } = window; // window 객체로부터 스크립트에서 로드한 kakao api를 가져옴
@@ -14,12 +16,8 @@ export default function BasicMap() {
 
   // 입력 폼 변화 감지하여 입력 값 관리
   const [Value, setValue] = useState("");
-  // url에 검색 키워드 추가옵션.
+  // // url에 검색 키워드 추가옵션.
   const navigate = useNavigate();
-
-  const getUrlParams = () => {
-    const url = new URL(window.location.href);
-  }
 
   // 검색 기능
   const keywordChange = (e) => {
@@ -158,7 +156,7 @@ export default function BasicMap() {
               }),
             }).then((marker) => marker.json());
           }
-            navigate(`/search/${Value}`);
+          navigate(`/search/${Value}`);
         },
         { page: 1 }
       );
@@ -260,6 +258,12 @@ export default function BasicMap() {
     </>
   );
 }
+
+KakaoMapEvent.propTypes = {
+  name: PropTypes.node.isRequired,
+};
+
+export default KakaoMapEvent;
 
 const Fixation = styled.div`
   display: block;
