@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
-import { useNavigate } from "react-router-dom";
-import PropTypes from 'prop-types';
+import { useNavigate, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
+import CreateMarker from "../Components/CreateMarker";
+import PaginationButton from "../Components/PaginationButton";
 import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
-function KakaoMapEvent({name}) {
+function KakaoMapEvent({ name }) {
   console.log(`name >>> `, name);
   UseKakaoLoader();
 
@@ -16,8 +18,11 @@ function KakaoMapEvent({name}) {
 
   // 입력 폼 변화 감지하여 입력 값 관리
   const [Value, setValue] = useState("");
-  // // url에 검색 키워드 추가옵션.
+  // url에 검색 키워드 추가옵션.
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const url = new URLSearchParams(location.search);
 
   // 검색 기능
   const keywordChange = (e) => {
@@ -40,9 +45,8 @@ function KakaoMapEvent({name}) {
       const places = new kakao.maps.services.Places();
       const pageBox = document.querySelector(".pageBox");
       places.keywordSearch(Value, (data, status, pagination) => {
-          console.log(`value >>> `, Value);
+          console.log(`Value >>> `, Value);
           console.log(`data >>> `, data);
-
           const resultEl = document.querySelector(".searchResult");
           resultEl.innerHTML = "";
           pageBox.style.display = "block";
@@ -54,45 +58,20 @@ function KakaoMapEvent({name}) {
             // 검색 시 마커 보이기
             let localPin = [];
 
+            console.log(`location >>> `, location);
+            console.log(`url >>> `, url);
+
             data.forEach((item) => {
-              const marker = createMarker(item);
+              const marker = CreateMarker(item);
               localPin.push(marker);
               bounds.extend(new kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
-
               appendResultListItem(resultEl, item, marker);
             });
 
             setMarkers(localPin); // 마커 설정
             map.setBounds(bounds);
 
-            // 페이지네이션 버튼
-            const paginationButton = (tmp) => {
-              pageBox.innerHTML = "";
-              tmp.forEach(function (index) {
-                const parent = document.createElement("li");
-                const child = document.createElement("a");
-                parent.className = `${index}Btn`;
-                pageBox.append(parent);
-                parent.append(child);
-                child.append(`${index}`);
-                const idxBtn = pageBox.querySelector(`.${index}Btn`);
-                idxBtn.addEventListener("click", function () {
-                  if ("next" === index) {
-                    pagination.nextPage();
-                  } else if ("prev" === index) {
-                    pagination.prevPage();
-                  }
-                });
-              });
-            };
-
-            if (pagination.hasNextPage && pagination.hasPrevPage) {
-              paginationButton(["prev", "next"]);
-            } else if (pagination.hasNextPage) {
-              paginationButton(["next"]);
-            } else if (pagination.hasPrevPage) {
-              paginationButton(["prev"]);
-            }
+            PaginationButton(pagination); // 페이지 버튼 활성
 
             // 검색어에 대한 정보가 존재하지 않을시
           } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
@@ -105,18 +84,7 @@ function KakaoMapEvent({name}) {
             return;
           }
 
-          function createMarker(item) {
-            return {
-              position: {
-                lat: item.y,
-                lng: item.x,
-              },
-              content: item.place_name,
-              place_url: item.place_url,
-            };
-          }
-
-          function appendResultListItem(parent, item, marker) {
+          function appendResultListItem(list, item, marker) {
             const resultList = document.createElement("li");
             resultList.className = "restaurant";
 
@@ -139,8 +107,7 @@ function KakaoMapEvent({name}) {
             <p>Tel: ${restaurantTel}</p>
             <hr>
           `;
-
-            parent.appendChild(resultList);
+            list.appendChild(resultList);
           }
 
           function handleClick(marker, item) {
@@ -156,7 +123,7 @@ function KakaoMapEvent({name}) {
               }),
             }).then((marker) => marker.json());
           }
-          navigate(`/search/${Value}`);
+          navigate(`/search/${Value}`, { state: name });
         },
         { page: 1 }
       );
