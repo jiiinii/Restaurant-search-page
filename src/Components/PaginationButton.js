@@ -1,10 +1,9 @@
 const PaginationButton = (pagination) => {
   const pageBox = document.querySelector(".pageBox");
-  
+
   const prevAndNextBtn = (tmp) => {
     pageBox.innerHTML = "";
     tmp.forEach(function (index) {
-      console.log(`Index >>> `, index);
       const parent = document.createElement("li");
       const child = document.createElement("a");
       parent.className = `${index}Btn`;

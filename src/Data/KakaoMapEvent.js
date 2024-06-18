@@ -16,13 +16,20 @@ function KakaoMapEvent({ name }) {
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
 
+  // url data
+  const location = useLocation();
+  const stateVal = location.state;
+  const searchParams = new URLSearchParams(document.location);
+  const urlSearchParams = new URL(document.location);
+  console.log(`location >>> `, location);
+  console.log(`stateVal >>> `, stateVal);
+  console.log(`searchParams >>> `, searchParams);
+  console.log(`urlSearchParams >>> `, urlSearchParams);
+
   // 입력 폼 변화 감지하여 입력 값 관리
   const [Value, setValue] = useState("");
   // url에 검색 키워드 추가옵션.
   const navigate = useNavigate();
-
-  const location = useLocation();
-  const url = new URLSearchParams(location.search);
 
   // 검색 기능
   const keywordChange = (e) => {
@@ -57,9 +64,6 @@ function KakaoMapEvent({ name }) {
             const bounds = new kakao.maps.LatLngBounds();
             // 검색 시 마커 보이기
             let localPin = [];
-
-            console.log(`location >>> `, location);
-            console.log(`url >>> `, url);
 
             data.forEach((item) => {
               const marker = CreateMarker(item);
