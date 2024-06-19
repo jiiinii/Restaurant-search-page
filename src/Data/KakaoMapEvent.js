@@ -8,7 +8,6 @@ import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
 function KakaoMapEvent({ name }) {
-  console.log(`name >>> `, name);
   UseKakaoLoader();
 
   const { kakao } = window; // window 객체로부터 스크립트에서 로드한 kakao api를 가져옴
@@ -19,12 +18,12 @@ function KakaoMapEvent({ name }) {
   // url data
   const location = useLocation();
   const stateVal = location.state;
-  const searchParams = new URLSearchParams(document.location);
-  const urlSearchParams = new URL(document.location);
-  console.log(`location >>> `, location);
-  console.log(`stateVal >>> `, stateVal);
-  console.log(`searchParams >>> `, searchParams);
-  console.log(`urlSearchParams >>> `, urlSearchParams);
+
+  if (name) {
+    stateVal.forEach((str) => {
+      console.log(`str >>> `, str);
+    })
+  }
 
   // 입력 폼 변화 감지하여 입력 값 관리
   const [Value, setValue] = useState("");
@@ -127,7 +126,7 @@ function KakaoMapEvent({ name }) {
               }),
             }).then((marker) => marker.json());
           }
-          navigate(`/search/${Value}`, { state: name });
+          navigate(`/search/${Value}`, { state: data });
         },
         { page: 1 }
       );
