@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import CreateMarker from "../Components/CreateMarker";
 import PaginationButton from "../Components/PaginationButton";
+import ResultList from "../Components/ResultList";
 import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
@@ -14,19 +15,12 @@ function KakaoMapEvent({ name }) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
+  const [Value, setValue] = useState(""); // 입력 폼 변화 감지하여 입력 값 관리
 
   // url data
   const location = useLocation();
   const stateVal = location.state;
 
-  if (name) {
-    stateVal.forEach((str) => {
-      console.log(`str >>> `, str);
-    })
-  }
-
-  // 입력 폼 변화 감지하여 입력 값 관리
-  const [Value, setValue] = useState("");
   // url에 검색 키워드 추가옵션.
   const navigate = useNavigate();
 
@@ -52,7 +46,6 @@ function KakaoMapEvent({ name }) {
       const pageBox = document.querySelector(".pageBox");
       places.keywordSearch(Value, (data, status, pagination) => {
           console.log(`Value >>> `, Value);
-          console.log(`data >>> `, data);
           const resultEl = document.querySelector(".searchResult");
           resultEl.innerHTML = "";
           pageBox.style.display = "block";
@@ -68,12 +61,11 @@ function KakaoMapEvent({ name }) {
               const marker = CreateMarker(item);
               localPin.push(marker);
               bounds.extend(new kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
-              appendResultListItem(resultEl, item, marker);
+              // appendResultListItem(resultEl, item, marker);
             });
 
             setMarkers(localPin); // 마커 설정
             map.setBounds(bounds);
-
             PaginationButton(pagination); // 페이지 버튼 활성
 
             // 검색어에 대한 정보가 존재하지 않을시
@@ -86,46 +78,6 @@ function KakaoMapEvent({ name }) {
             alert("검색 결과 중 오류가 발생했습니다.");
             return;
           }
-
-          function appendResultListItem(list, item, marker) {
-            const resultList = document.createElement("li");
-            resultList.className = "restaurant";
-
-            resultList.addEventListener("click", () => {
-              handleClick(marker, item);
-            });
-
-            const restaurantType = item.category_name
-              ? item.category_name.split(">")[1]
-              : "";
-            const restaurantTel = item.phone !== "" ? item.phone : "정보 없음";
-
-            resultList.innerHTML = `
-            <div class="placeAndtype" style="display: flex;">
-              <p class="placeName">${item.place_name}</p>&nbsp;
-              <p class="categoryName">${restaurantType}</p>
-            </div>
-            <p>주소: ${item.address_name}</p>
-            <p>도로명: ${item.road_address_name}</p>
-            <p>Tel: ${restaurantTel}</p>
-            <hr>
-          `;
-            list.appendChild(resultList);
-          }
-
-          function handleClick(marker, item) {
-            setInfo(marker);
-            fetch(`http://localhost:5000/api/items`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                name: item.place_name,
-                time: new Date().getTime(),
-              }),
-            }).then((marker) => marker.json());
-          }
           navigate(`/search/${Value}`, { state: data });
         },
         { page: 1 }
@@ -134,7 +86,7 @@ function KakaoMapEvent({ name }) {
   };
 
   // 현재 위치 추적
-  const [state, setState] = useState({
+  const [local, setLocal] = useState({
     center: {
       // Default : 카카오 본사
       lat: 33.450701,
@@ -149,7 +101,7 @@ function KakaoMapEvent({ name }) {
       // GeoLocation을 이용해서 접속 위치를 얻어옴
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setState((prev) => ({
+          setLocal((prev) => ({
             ...prev,
             center: {
               lat: position.coords.latitude, // 위도
@@ -159,7 +111,7 @@ function KakaoMapEvent({ name }) {
           }));
         },
         (err) => {
-          setState((prev) => ({
+          setLocal((prev) => ({
             ...prev,
             errMsg: err.message,
             isLoading: false,
@@ -168,13 +120,19 @@ function KakaoMapEvent({ name }) {
       );
     } else {
       // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정
-      setState((prev) => ({
+      setLocal((prev) => ({
         ...prev,
         errMsg: "geolocation을 사용할수 없습니다",
         isLoading: false,
       }));
     }
   }, []);
+
+  if (name) {
+    stateVal.forEach((str) => {
+      ResultList(str);
+    });
+  }
 
   return (
     <>
@@ -197,7 +155,7 @@ function KakaoMapEvent({ name }) {
       </Fixation>
       <div className="myMap">
         <Map
-          center={state.center}
+          center={local.center}
           style={{ width: "758px", height: "650px", borderRadius: "10px" }}
           level={3}
           onCreate={setMap}
@@ -221,7 +179,7 @@ function KakaoMapEvent({ name }) {
               )}
             </MapMarker>
           ))}
-          {!state.isLoading && <MapMarker position={state.center}></MapMarker>}
+          {!local.isLoading && <MapMarker position={local.center}></MapMarker>}
           <ZoomControl />
         </Map>
       </div>
