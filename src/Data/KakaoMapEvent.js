@@ -1,28 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import CreateMarker from "../Components/CreateMarker";
 import PaginationButton from "../Components/PaginationButton";
-import ResultList from "../Components/ResultList";
 import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
 function KakaoMapEvent({ name }) {
+  console.log(`name : ${name}`);
   UseKakaoLoader();
-
   const { kakao } = window; // window 객체로부터 스크립트에서 로드한 kakao api를 가져옴
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
-  const [Value, setValue] = useState(""); // 입력 폼 변화 감지하여 입력 값 관리
 
-  // url data
-  const location = useLocation();
-  const stateVal = location.state;
-
+  // 입력 폼 변화 감지하여 입력 값 관리
+  const [Value, setValue] = useState("");
   // url에 검색 키워드 추가옵션.
   const navigate = useNavigate();
+
+  const callAPI = async() => {
+    const url = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=127.423084873712&y=37.0789561558879&input_coord=WGS84`
+    const config = {headers:'Authorization: KakaoAK 749b1cd024618b540fe298604e8cdba8'};
+    const result = await axios(url,config);
+  }
+
 
   // 검색 기능
   const keywordChange = (e) => {
@@ -45,7 +48,6 @@ function KakaoMapEvent({ name }) {
       const places = new kakao.maps.services.Places();
       const pageBox = document.querySelector(".pageBox");
       places.keywordSearch(Value, (data, status, pagination) => {
-          console.log(`Value >>> `, Value);
           const resultEl = document.querySelector(".searchResult");
           resultEl.innerHTML = "";
           pageBox.style.display = "block";
@@ -61,7 +63,7 @@ function KakaoMapEvent({ name }) {
               const marker = CreateMarker(item);
               localPin.push(marker);
               bounds.extend(new kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
-              // appendResultListItem(resultEl, item, marker);
+              appendResultListItem(resultEl, item, marker);
             });
 
             setMarkers(localPin); // 마커 설정
@@ -78,7 +80,7 @@ function KakaoMapEvent({ name }) {
             alert("검색 결과 중 오류가 발생했습니다.");
             return;
           }
-          navigate(`/search/${Value}`, { state: data });
+          navigate(`/search/${Value}`);
         },
         { page: 1 }
       );
@@ -95,6 +97,46 @@ function KakaoMapEvent({ name }) {
     errMsg: null,
     isLoading: true,
   });
+
+  function appendResultListItem(list, item, marker) {
+    const resultList = document.createElement("li");
+    resultList.className = "restaurant";
+
+    resultList.addEventListener("click", () => {
+      handleClick(marker, item);
+    });
+
+    const restaurantType = item.category_name
+      ? item.category_name.split(">")[1]
+      : "";
+    const restaurantTel = item.phone !== "" ? item.phone : "정보 없음";
+
+    resultList.innerHTML = `
+    <div class="placeAndtype" style="display: flex;">
+      <p class="placeName">${item.place_name}</p>&nbsp;
+      <p class="categoryName">${restaurantType}</p>
+    </div>
+    <p>주소: ${item.address_name}</p>
+    <p>도로명: ${item.road_address_name}</p>
+    <p>Tel: ${restaurantTel}</p>
+    <hr>
+  `;
+    list.appendChild(resultList);
+  }
+
+  function handleClick(marker, item) {
+    setInfo(marker);
+    fetch(`http://localhost:5000/api/items`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: item.place_name,
+        time: new Date().getTime(),
+      }),
+    }).then((marker) => marker.json());
+  }
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -127,12 +169,6 @@ function KakaoMapEvent({ name }) {
       }));
     }
   }, []);
-
-  if (name) {
-    stateVal.forEach((str) => {
-      ResultList(str);
-    });
-  }
 
   return (
     <>

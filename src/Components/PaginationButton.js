@@ -1,20 +1,17 @@
 const PaginationButton = (pagination) => {
   const pageBox = document.querySelector(".pageBox");
-
   const prevAndNextBtn = (tmp) => {
     pageBox.innerHTML = "";
     tmp.forEach(function (index) {
       const parent = document.createElement("li");
       const child = document.createElement("a");
       parent.className = `${index}Btn`;
-
       if (pageBox) {
         pageBox.append(parent);
         parent.append(child);
         child.append(`${index}`);
-
         const idxBtn = pageBox.querySelector(`.${index}Btn`);
-        idxBtn.addEventListener("click", function () {
+        idxBtn.addEventListener("click", () => {
           if ("next" === index) {
             pagination.nextPage();
           } else if ("prev" === index) {

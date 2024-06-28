@@ -29,7 +29,7 @@ const EaterySearch = () => {
           </header>
         </Lump>
         <SearchForInformation>
-          <KakaoMapEvent name = {params.result}/>
+          <KakaoMapEvent name = {params.result !== undefined ? params.result : ""}/>
         </SearchForInformation>
       </Fixation>
       <ProducerInfo />
