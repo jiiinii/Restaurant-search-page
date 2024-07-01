@@ -20,13 +20,6 @@ function KakaoMapEvent({ name }) {
   // url에 검색 키워드 추가옵션.
   const navigate = useNavigate();
 
-  const callAPI = async() => {
-    const url = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=127.423084873712&y=37.0789561558879&input_coord=WGS84`
-    const config = {headers:'Authorization: KakaoAK 749b1cd024618b540fe298604e8cdba8'};
-    const result = await axios(url,config);
-  }
-
-
   // 검색 기능
   const keywordChange = (e) => {
     e.preventDefault();
@@ -42,12 +35,14 @@ function KakaoMapEvent({ name }) {
     if (Value === "") {
       alert("검색어를 입력해주세요.");
     } else {
+      navigate(`/search/${Value}`);
       if (!map) return;
 
       // 장소 검색 및 주소-좌표 간 변환 서비스
       const places = new kakao.maps.services.Places();
+      console.log(`places @@@@@@@@@`, places);
       const pageBox = document.querySelector(".pageBox");
-      places.keywordSearch(Value, (data, status, pagination) => {
+      places.keywordSearch( Value, (data, status, pagination) => {
           const resultEl = document.querySelector(".searchResult");
           resultEl.innerHTML = "";
           pageBox.style.display = "block";
@@ -80,7 +75,6 @@ function KakaoMapEvent({ name }) {
             alert("검색 결과 중 오류가 발생했습니다.");
             return;
           }
-          navigate(`/search/${Value}`);
         },
         { page: 1 }
       );
