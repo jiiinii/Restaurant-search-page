@@ -10,20 +10,18 @@ import styled from "styled-components";
 function KakaoMapEvent({ name }) {
   console.log(`name : ${name}`);
   UseKakaoLoader();
-  const { kakao } = window; // window 객체로부터 스크립트에서 로드한 kakao api를 가져옴
+  // const { kakao } = window; // window 객체로부터 스크립트에서 로드한 kakao api를 가져옴
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
 
-  // 입력 폼 변화 감지하여 입력 값 관리
-  const [Value, setValue] = useState("");
   // url에 검색 키워드 추가옵션.
   const navigate = useNavigate();
 
   // 검색 기능
   const keywordChange = (e) => {
     e.preventDefault();
-    setValue(e.target.value);
+    // setValue(e.target.value);
   };
 
   // 검색어 제출 기능
@@ -32,53 +30,57 @@ function KakaoMapEvent({ name }) {
   };
   // 검색 버튼
   const valueChecker = () => {
-    if (Value === "") {
+    const value = document.querySelector(".search-entry").value;
+    console.log(`val ${value}`);
+    if (value === "") {
       alert("검색어를 입력해주세요.");
     } else {
-      navigate(`/search/${Value}`);
-      if (!map) return;
+      navigate(`/search/${value}`); // url 변경
+    }
+  };
 
-      // 장소 검색 및 주소-좌표 간 변환 서비스
-      const places = new kakao.maps.services.Places();
-      console.log(`places @@@@@@@@@`, places);
-      const pageBox = document.querySelector(".pageBox");
-      places.keywordSearch( Value, (data, status, pagination) => {
-          const resultEl = document.querySelector(".searchResult");
-          resultEl.innerHTML = "";
-          pageBox.style.display = "block";
+  const mapData = (name) => {
+    const places = new window.kakao.maps.services.Places();
+    places.keywordSearch(name, (data, status, pagination) => { // api
+        console.log(`name >>>>>>>> `, name);
+        const pageBox = document.querySelector(".pageBox");
+        const resultEl = document.querySelector(".searchResult");
+        resultEl.innerHTML = "";
+        pageBox.style.display = "block";
 
-          // 지도 API의 마커객체와 그리기 요소를 쉽게 지도 위에 그릴 수 있도록 기능을 제공
-          if (status === kakao.maps.services.Status.OK) {
-            // WGS84 좌표계에서 사각영역 정보를 표현하는 객체를 생성
-            const bounds = new kakao.maps.LatLngBounds();
-            // 검색 시 마커 보이기
-            let localPin = [];
+        // 지도 API의 마커객체와 그리기 요소를 쉽게 지도 위에 그릴 수 있도록 기능을 제공
+        if (status === window.kakao.maps.services.Status.OK) {
+          // WGS84 좌표계에서 사각영역 정보를 표현하는 객체를 생성
+          const bounds = new window.kakao.maps.LatLngBounds();
+          // 검색 시 마커 보이기
+          let localPin = [];
 
-            data.forEach((item) => {
-              const marker = CreateMarker(item);
-              localPin.push(marker);
-              bounds.extend(new kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
-              appendResultListItem(resultEl, item, marker);
-            });
+          data.forEach((item) => {
+            const marker = CreateMarker(item);
+            localPin.push(marker);
+            bounds.extend(new window.kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
+            appendResultListItem(resultEl, item, marker);
+          });
+          // setMarkers(localPin); // 마커 설정
 
-            setMarkers(localPin); // 마커 설정
+          if(map !== null) {
             map.setBounds(bounds);
             PaginationButton(pagination); // 페이지 버튼 활성
-
-            // 검색어에 대한 정보가 존재하지 않을시
-          } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-            pageBox.style.display = "none";
-            alert("검색 결과가 존재하지 않습니다.");
-            return;
-          } else if (status === kakao.maps.services.Status.ERROR) {
-            pageBox.style.display = "none";
-            alert("검색 결과 중 오류가 발생했습니다.");
-            return;
           }
-        },
-        { page: 1 }
-      );
-    }
+
+          // 검색어에 대한 정보가 존재하지 않을시
+        } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
+          pageBox.style.display = "none";
+          alert("검색 결과가 존재하지 않습니다.");
+          return;
+        } else if (status === window.kakao.maps.services.Status.ERROR) {
+          pageBox.style.display = "none";
+          alert("검색 결과 중 오류가 발생했습니다.");
+          return;
+        }
+      },
+      { page: 1 }
+    );
   };
 
   // 현재 위치 추적
@@ -93,10 +95,12 @@ function KakaoMapEvent({ name }) {
   });
 
   function appendResultListItem(list, item, marker) {
+    // 결과 리스트
     const resultList = document.createElement("li");
     resultList.className = "restaurant";
 
     resultList.addEventListener("click", () => {
+      // 리스트 클릭 이벤트
       handleClick(marker, item);
     });
 
@@ -119,6 +123,7 @@ function KakaoMapEvent({ name }) {
   }
 
   function handleClick(marker, item) {
+    // 클릭시 최근검색 기록에 키워드 추가
     setInfo(marker);
     fetch(`http://localhost:5000/api/items`, {
       method: "POST",
@@ -163,6 +168,12 @@ function KakaoMapEvent({ name }) {
       }));
     }
   }, []);
+
+  if(name) {
+    setTimeout(() => {
+      mapData(name);
+    }, 100)
+  }
 
   return (
     <>
