@@ -21,7 +21,6 @@ function KakaoMapEvent({ name }) {
   // 검색 기능
   const keywordChange = (e) => {
     e.preventDefault();
-    // setValue(e.target.value);
   };
 
   // 검색어 제출 기능
@@ -31,7 +30,6 @@ function KakaoMapEvent({ name }) {
   // 검색 버튼
   const valueChecker = () => {
     const value = document.querySelector(".search-entry").value;
-    console.log(`val ${value}`);
     if (value === "") {
       alert("검색어를 입력해주세요.");
     } else {
@@ -39,49 +37,56 @@ function KakaoMapEvent({ name }) {
     }
   };
 
-  const mapData = (name) => {
-    const places = new window.kakao.maps.services.Places();
-    places.keywordSearch(name, (data, status, pagination) => { // api
-        console.log(`name >>>>>>>> `, name);
-        const pageBox = document.querySelector(".pageBox");
-        const resultEl = document.querySelector(".searchResult");
-        resultEl.innerHTML = "";
-        pageBox.style.display = "block";
+  useEffect(() => {
+    if (name) {
+      setTimeout(() => {
+        const places = new window.kakao.maps.services.Places();
+        places.keywordSearch(name, (data, status, pagination) => {
+            // api
+            console.log(`name >>>>>>>> `, name);
+            const pageBox = document.querySelector(".pageBox");
+            const resultEl = document.querySelector(".searchResult");
+            resultEl.innerHTML = "";
+            pageBox.style.display = "block";
 
-        // 지도 API의 마커객체와 그리기 요소를 쉽게 지도 위에 그릴 수 있도록 기능을 제공
-        if (status === window.kakao.maps.services.Status.OK) {
-          // WGS84 좌표계에서 사각영역 정보를 표현하는 객체를 생성
-          const bounds = new window.kakao.maps.LatLngBounds();
-          // 검색 시 마커 보이기
-          let localPin = [];
+            // 지도 API의 마커객체와 그리기 요소를 쉽게 지도 위에 그릴 수 있도록 기능을 제공
+            if (status === window.kakao.maps.services.Status.OK) {
+              // WGS84 좌표계에서 사각영역 정보를 표현하는 객체를 생성
+              const bounds = new window.kakao.maps.LatLngBounds();
+              // 검색 시 마커 보이기
+              let localPin = [];
 
-          data.forEach((item) => {
-            const marker = CreateMarker(item);
-            localPin.push(marker);
-            bounds.extend(new window.kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
-            appendResultListItem(resultEl, item, marker);
-          });
-          // setMarkers(localPin); // 마커 설정
+              data.forEach((item) => {
+                const marker = CreateMarker(item);
+                localPin.push(marker);
+                bounds.extend(new window.kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
+                appendResultListItem(resultEl, item, marker);
+              });
+              setMarkers(localPin); // 마커 설정
 
-          if(map !== null) {
-            map.setBounds(bounds);
-            PaginationButton(pagination); // 페이지 버튼 활성
-          }
+              if (map !== undefined) {
+                map.setBounds(bounds);
+                PaginationButton(pagination); // 페이지 버튼 활성
+              }
 
-          // 검색어에 대한 정보가 존재하지 않을시
-        } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-          pageBox.style.display = "none";
-          alert("검색 결과가 존재하지 않습니다.");
-          return;
-        } else if (status === window.kakao.maps.services.Status.ERROR) {
-          pageBox.style.display = "none";
-          alert("검색 결과 중 오류가 발생했습니다.");
-          return;
-        }
-      },
-      { page: 1 }
-    );
-  };
+              // 검색어에 대한 정보가 존재하지 않을시
+            } else if (
+              status === window.kakao.maps.services.Status.ZERO_RESULT
+            ) {
+              pageBox.style.display = "none";
+              alert("검색 결과가 존재하지 않습니다.");
+              return;
+            } else if (status === window.kakao.maps.services.Status.ERROR) {
+              pageBox.style.display = "none";
+              alert("검색 결과 중 오류가 발생했습니다.");
+              return;
+            }
+          },
+          { page: 1 }
+        );
+      }, 100);
+    }
+  }, [map, name]);
 
   // 현재 위치 추적
   const [local, setLocal] = useState({
@@ -168,12 +173,6 @@ function KakaoMapEvent({ name }) {
       }));
     }
   }, []);
-
-  if(name) {
-    setTimeout(() => {
-      mapData(name);
-    }, 100)
-  }
 
   return (
     <>
