@@ -8,13 +8,12 @@ import UseKakaoLoader from "./UseKakaoLoader";
 import styled from "styled-components";
 
 function KakaoMapEvent({ name }) {
-  console.log(`name : ${name}`);
   UseKakaoLoader();
   // const { kakao } = window; // window 객체로부터 스크립트에서 로드한 kakao api를 가져옴
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
-  const [keyword, setKeyword] = useState(name);
+  const [keyword, setKeyword] = useState("");
 
   const handleChange = (e) => {
     setKeyword(e.target.value);
@@ -39,7 +38,7 @@ function KakaoMapEvent({ name }) {
 
   useEffect(() => {
     if (name) {
-      // 검색 값 유지
+        setKeyword(name);
         setTimeout(() => {
           const places = new window.kakao.maps.services.Places();
           places.keywordSearch(name, (data, status, pagination) => {
@@ -81,7 +80,14 @@ function KakaoMapEvent({ name }) {
             },
             { page: 1 }
           );
-        }, 200);
+        }, 200)
+    } else if(name === "") {
+      setKeyword("");
+      const resultEl = document.querySelector(".searchResult");
+      const pageBox = document.querySelector(".pageBox");
+      resultEl.innerHTML = "";
+      pageBox.style.display = "none";
+      // Map 초기화 되는 기능 삽입
     }
   }, [map, name]);
 
