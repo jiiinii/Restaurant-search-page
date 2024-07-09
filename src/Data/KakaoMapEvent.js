@@ -9,7 +9,6 @@ import styled from "styled-components";
 
 function KakaoMapEvent({ name }) {
   UseKakaoLoader();
-  // const { kakao } = window; // window 객체로부터 스크립트에서 로드한 kakao api를 가져옴
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
@@ -83,11 +82,31 @@ function KakaoMapEvent({ name }) {
         }, 200)
     } else if(name === "") {
       setKeyword("");
-      const resultEl = document.querySelector(".searchResult");
       const pageBox = document.querySelector(".pageBox");
+      const resultEl = document.querySelector(".searchResult");
       resultEl.innerHTML = "";
       pageBox.style.display = "none";
-      // Map 초기화 되는 기능 삽입
+      // Map 초기화 되는 기능 삽입, 마커도 초기화 시켜야 됨.
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocal((prev) => ({
+            ...prev,
+            center: {
+              lat: position.coords.latitude, // 위도
+              lng: position.coords.longitude, // 경도
+            },
+            isLoading: false,
+          }));
+        },
+        (err) => {
+          setLocal((prev) => ({
+            ...prev,
+            errMsg: err.message,
+            isLoading: false,
+          }));
+        }
+      );
+      setMarkers([]);
     }
   }, [map, name]);
 
@@ -146,35 +165,35 @@ function KakaoMapEvent({ name }) {
   }
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      // GeoLocation을 이용해서 접속 위치를 얻어옴
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocal((prev) => ({
-            ...prev,
-            center: {
-              lat: position.coords.latitude, // 위도
-              lng: position.coords.longitude, // 경도
-            },
-            isLoading: false,
-          }));
-        },
-        (err) => {
-          setLocal((prev) => ({
-            ...prev,
-            errMsg: err.message,
-            isLoading: false,
-          }));
-        }
-      );
-    } else {
-      // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정
-      setLocal((prev) => ({
-        ...prev,
-        errMsg: "geolocation을 사용할수 없습니다",
-        isLoading: false,
-      }));
-    }
+      if (navigator.geolocation) {
+        // GeoLocation을 이용해서 접속 위치를 얻어옴
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocal((prev) => ({
+              ...prev,
+              center: {
+                lat: position.coords.latitude, // 위도
+                lng: position.coords.longitude, // 경도
+              },
+              isLoading: false,
+            }));
+          },
+          (err) => {
+            setLocal((prev) => ({
+              ...prev,
+              errMsg: err.message,
+              isLoading: false,
+            }));
+          }
+        );
+      } else {
+        // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정
+        setLocal((prev) => ({
+          ...prev,
+          errMsg: "geolocation을 사용할수 없습니다",
+          isLoading: false,
+        }));
+      }
   }, []);
 
   return (

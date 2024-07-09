@@ -1,5 +1,4 @@
 const CreateMarker = (item) => {
-  console.log(`item @@@@@@@@@`, item);
   return {
     position: {
       lat: item.y,
