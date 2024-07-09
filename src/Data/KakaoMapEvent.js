@@ -86,27 +86,20 @@ function KakaoMapEvent({ name }) {
       const resultEl = document.querySelector(".searchResult");
       resultEl.innerHTML = "";
       pageBox.style.display = "none";
-      // Map 초기화 되는 기능 삽입, 마커도 초기화 시켜야 됨.
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocal((prev) => ({
-            ...prev,
-            center: {
-              lat: position.coords.latitude, // 위도
-              lng: position.coords.longitude, // 경도
-            },
-            isLoading: false,
-          }));
-        },
-        (err) => {
-          setLocal((prev) => ({
-            ...prev,
-            errMsg: err.message,
-            isLoading: false,
-          }));
-        }
-      );
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocal((prev) => ({
+              ...prev,
+              center: {
+                lat: position.coords.latitude, // 위도
+                lng: position.coords.longitude, // 경도
+              },
+              isLoading: false,
+            }));
+          }
+        );
       setMarkers([]);
+      // 맵 초기화시 현재 위치로 이동이 안됨.
     }
   }, [map, name]);
 
