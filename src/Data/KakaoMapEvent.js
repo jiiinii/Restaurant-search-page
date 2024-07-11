@@ -52,7 +52,6 @@ function KakaoMapEvent({ name }) {
               const bounds = new window.kakao.maps.LatLngBounds();
               // 검색 시 마커 보이기
               let localPin = [];
-
               data.forEach((item) => {
                 const marker = CreateMarker(item);
                 localPin.push(marker);
@@ -89,6 +88,7 @@ function KakaoMapEvent({ name }) {
       setTimeout(() => {
         const bounds = new window.kakao.maps.LatLngBounds();
         navigator.geolocation.getCurrentPosition((position) => {
+          console.log(`navigator.geolocation.getCurrentPosition @@@@@@@@@`, position);
           setLocale((prev) => ({
             ...prev,
             center: {
@@ -99,13 +99,14 @@ function KakaoMapEvent({ name }) {
           }));
           bounds.extend(new window.kakao.maps.LatLng(position.coords.latitude, position.coords.longitude));
           if (map !== undefined) {
+            console.log(`geolocation 22222222222222222`);
             map.setBounds(bounds);
           }
         });
       }, 200);
       setMarkers([]);
     }
-  }, [map, name]);
+  }, [name]); // name값이 변동이 있을 때, useEffect가 호출이 됨
 
   // 현재 위치 추적
   const [locale, setLocale] = useState({
@@ -122,7 +123,6 @@ function KakaoMapEvent({ name }) {
     // 결과 리스트
     const resultList = document.createElement("li");
     resultList.className = "restaurant";
-
     resultList.addEventListener("click", () => {
       // 리스트 클릭 이벤트
       handleClick(marker, item);
@@ -131,8 +131,8 @@ function KakaoMapEvent({ name }) {
     const restaurantType = item.category_name
       ? item.category_name.split(">")[1]
       : "";
-    const restaurantTel = item.phone !== "" ? item.phone : "정보 없음";
 
+    const restaurantTel = item.phone !== "" ? item.phone : "정보 없음";
     resultList.innerHTML = `
     <div class="placeAndtype" style="display: flex;">
       <p class="placeName">${item.place_name}</p>&nbsp;
@@ -173,13 +173,6 @@ function KakaoMapEvent({ name }) {
               lat: position.coords.latitude, // 위도
               lng: position.coords.longitude, // 경도
             },
-            isLoading: false,
-          }));
-        },
-        (err) => {
-          setLocale((prev) => ({
-            ...prev,
-            errMsg: err.message,
             isLoading: false,
           }));
         }

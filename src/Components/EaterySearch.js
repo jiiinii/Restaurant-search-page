@@ -6,7 +6,6 @@ import ProducerInfo from "./ProducerInfo";
 import { useParams } from "react-router-dom";
 
 const EaterySearch = () => {
-  console.log(`@@@ EaterySearch`);
   const params = useParams();
   return (
     <>
