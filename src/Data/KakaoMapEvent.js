@@ -79,7 +79,11 @@ function KakaoMapEvent({ name }) {
           { page: 1 }
         );
       }, 200);
-    } else if (name === "") {
+    }
+  }, [map, name]);
+
+  useEffect(() => {
+    if (name === "") {
       setKeyword("");
       const pageBox = document.querySelector(".pageBox");
       const resultEl = document.querySelector(".searchResult");
@@ -88,7 +92,7 @@ function KakaoMapEvent({ name }) {
       setTimeout(() => {
         const bounds = new window.kakao.maps.LatLngBounds();
         navigator.geolocation.getCurrentPosition((position) => {
-          console.log(`navigator.geolocation.getCurrentPosition @@@@@@@@@`, position);
+          console.log(`navigator.geolocation.getCurrentPosition @@@@@@@@@`,position);
           setLocale((prev) => ({
             ...prev,
             center: {
@@ -97,7 +101,12 @@ function KakaoMapEvent({ name }) {
             },
             isLoading: false,
           }));
-          bounds.extend(new window.kakao.maps.LatLng(position.coords.latitude, position.coords.longitude));
+          bounds.extend(
+            new window.kakao.maps.LatLng(
+              position.coords.latitude,
+              position.coords.longitude
+            )
+          );
           if (map !== undefined) {
             console.log(`geolocation 22222222222222222`);
             map.setBounds(bounds);
@@ -106,7 +115,7 @@ function KakaoMapEvent({ name }) {
       }, 200);
       setMarkers([]);
     }
-  }, [name]); // name값이 변동이 있을 때, useEffect가 호출이 됨
+  }, [name])
 
   // 현재 위치 추적
   const [locale, setLocale] = useState({
@@ -164,19 +173,17 @@ function KakaoMapEvent({ name }) {
   useEffect(() => {
     if (navigator.geolocation) {
       // GeoLocation을 이용해서 접속 위치를 얻어옴
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log(`geolocaion --------------->`, position );
-          setLocale((prev) => ({
-            ...prev,
-            center: {
-              lat: position.coords.latitude, // 위도
-              lng: position.coords.longitude, // 경도
-            },
-            isLoading: false,
-          }));
-        }
-      );
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log(`geolocaion --------------->`, position);
+        setLocale((prev) => ({
+          ...prev,
+          center: {
+            lat: position.coords.latitude, // 위도
+            lng: position.coords.longitude, // 경도
+          },
+          isLoading: false,
+        }));
+      });
     }
   }, []);
   return (
@@ -225,7 +232,9 @@ function KakaoMapEvent({ name }) {
               )}
             </MapMarker>
           ))}
-          {!locale.isLoading && <MapMarker position={locale.center}></MapMarker>}
+          {!locale.isLoading && (
+            <MapMarker position={locale.center}></MapMarker>
+          )}
           <ZoomControl />
         </Map>
       </div>
