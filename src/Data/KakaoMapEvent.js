@@ -92,12 +92,11 @@ function KakaoMapEvent({ name }) {
       setTimeout(() => {
         const bounds = new window.kakao.maps.LatLngBounds();
         navigator.geolocation.getCurrentPosition((position) => {
-          console.log(`navigator.geolocation.getCurrentPosition @@@@@@@@@`,position);
           setLocale((prev) => ({
             ...prev,
             center: {
               lat: position.coords.latitude, // 위도
-              lng: position.coords.longitude, // 경도
+              lng: position.coords.longitude // 경도
             },
             isLoading: false,
           }));
@@ -108,7 +107,6 @@ function KakaoMapEvent({ name }) {
             )
           );
           if (map !== undefined) {
-            console.log(`geolocation 22222222222222222`);
             map.setBounds(bounds);
           }
         });
@@ -122,7 +120,7 @@ function KakaoMapEvent({ name }) {
     center: {
       // Default : 카카오 본사
       lat: 33.450701,
-      lng: 126.570667,
+      lng: 126.570667
     },
     errMsg: null,
     isLoading: true,
@@ -174,12 +172,11 @@ function KakaoMapEvent({ name }) {
     if (navigator.geolocation) {
       // GeoLocation을 이용해서 접속 위치를 얻어옴
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log(`geolocaion --------------->`, position);
         setLocale((prev) => ({
           ...prev,
           center: {
             lat: position.coords.latitude, // 위도
-            lng: position.coords.longitude, // 경도
+            lng: position.coords.longitude // 경도
           },
           isLoading: false,
         }));
