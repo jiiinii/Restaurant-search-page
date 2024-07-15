@@ -8,7 +8,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const HomeNav = () => {
-  console.log(`@@@@ HomeNav`);
   const settings = {
     dots: true,
     infinite: true, // 무한슬라이더 여부

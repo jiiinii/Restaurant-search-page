@@ -22,7 +22,7 @@ const connection = mongoose
 // API 라우트 생성
 const ServerSchema = require("./src/Models/ServerSchema");
 
-// 데이터 가져오기
+// 데이터 가져오기부산
 // try catch : 예외발생 상황 지정
 app.get("/api/items", async (req, res) => {
   console.log(`server.js >>>`);

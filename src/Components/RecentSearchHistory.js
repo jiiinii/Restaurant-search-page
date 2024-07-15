@@ -70,7 +70,7 @@ const RecentSearchHistory = () => {
             </div>
           ) : (
             <div className="recentList">
-              <div className="recentListName">
+              <div className="noRecentList">
                 <p>최근 검색 기록이 없습니다.</p>
               </div>
             </div>
@@ -114,7 +114,7 @@ const ListBox = styled.div`
   border: none;
   border-radius: 10px;
   display: flex;
-  align-items: center;
+  justify-content: center;
   width: 1300px;
   height: 80px;
   background: #f4e384;
@@ -123,13 +123,20 @@ const ListBox = styled.div`
     width: 1200px;
     height: 40px;
     display: flex;
-    margin: auto;
+    margin: auto 30px;
   }
 
   .recentListName {
     align-self: center;
     vertical-align: middle;
-    margin: 10px auto;
+    padding-right: 35px;
+  }
+
+  .noRecentList {
+  align-self: center;
+  vertical-align: middle;
+  margin: 10px auto;
+  padding-right: 30px;
   }
 
   p {

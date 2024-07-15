@@ -61,9 +61,11 @@ function KakaoMapEvent({ name }) {
               setMarkers(localPin); // 마커 설정
 
               if (map !== undefined) {
+                console.log(`map >>>>>>>>>>>>>>>`, map);
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정
                 map.setBounds(bounds);
                 PaginationButton(pagination); // 페이지 버튼 활성
+                console.log(`pagination >>> `, pagination);
               }
               // 검색어에 대한 정보가 존재하지 않을시
             } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
@@ -78,7 +80,7 @@ function KakaoMapEvent({ name }) {
           },
           { page: 1 }
         );
-      }, 200);
+      }, 2000);
     }
   }, [map, name]);
 
@@ -92,6 +94,7 @@ function KakaoMapEvent({ name }) {
       setTimeout(() => {
         const bounds = new window.kakao.maps.LatLngBounds();
         navigator.geolocation.getCurrentPosition((position) => {
+          console.log(`geolocation 22222222222222222`, position);
           setLocale((prev) => ({
             ...prev,
             center: {
@@ -110,7 +113,7 @@ function KakaoMapEvent({ name }) {
             map.setBounds(bounds);
           }
         });
-      }, 200);
+      }, 2000);
       setMarkers([]);
     }
   }, [name])
@@ -125,6 +128,10 @@ function KakaoMapEvent({ name }) {
     errMsg: null,
     isLoading: true,
   });
+
+  useEffect(() => {
+    console.log(`locale &&&&&&&&&&`, locale);
+  }, [locale])
 
   function appendResultListItem(list, item, marker) {
     // 결과 리스트
@@ -172,6 +179,7 @@ function KakaoMapEvent({ name }) {
     if (navigator.geolocation) {
       // GeoLocation을 이용해서 접속 위치를 얻어옴
       navigator.geolocation.getCurrentPosition((position) => {
+        console.log(`position 333333333333333`, position);
         setLocale((prev) => ({
           ...prev,
           center: {
