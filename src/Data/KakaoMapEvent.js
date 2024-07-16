@@ -13,6 +13,7 @@ function KakaoMapEvent({ name }) {
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
   const [keyword, setKeyword] = useState("");
+  // const [locale, setLocale] = useState({});
 
   const handleChange = (e) => {
     setKeyword(e.target.value);
@@ -65,7 +66,6 @@ function KakaoMapEvent({ name }) {
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정
                 map.setBounds(bounds);
                 PaginationButton(pagination); // 페이지 버튼 활성
-                console.log(`pagination >>> `, pagination);
               }
               // 검색어에 대한 정보가 존재하지 않을시
             } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
@@ -80,12 +80,12 @@ function KakaoMapEvent({ name }) {
           },
           { page: 1 }
         );
-      }, 2000);
+      }, 200);
     }
   }, [map, name]);
 
   useEffect(() => {
-    if (name === "") {
+    if (name === "" && navigator.geolocation) {
       setKeyword("");
       const pageBox = document.querySelector(".pageBox");
       const resultEl = document.querySelector(".searchResult");
@@ -113,12 +113,13 @@ function KakaoMapEvent({ name }) {
             map.setBounds(bounds);
           }
         });
-      }, 2000);
+      }, 300);
       setMarkers([]);
     }
   }, [name])
 
   // 현재 위치 추적
+  ///////////////////
   const [locale, setLocale] = useState({
     center: {
       // Default : 카카오 본사
@@ -174,23 +175,6 @@ function KakaoMapEvent({ name }) {
       }),
     }).then((marker) => marker.json());
   }
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      // GeoLocation을 이용해서 접속 위치를 얻어옴
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log(`position 333333333333333`, position);
-        setLocale((prev) => ({
-          ...prev,
-          center: {
-            lat: position.coords.latitude, // 위도
-            lng: position.coords.longitude // 경도
-          },
-          isLoading: false,
-        }));
-      });
-    }
-  }, []);
   return (
     <>
       <Fixation>
