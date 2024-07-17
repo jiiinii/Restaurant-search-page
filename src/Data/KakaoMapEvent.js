@@ -44,6 +44,7 @@ function KakaoMapEvent({ name }) {
         places.keywordSearch(name, (data, status, pagination) => {
             const pageBox = document.querySelector(".pageBox");
             const resultEl = document.querySelector(".searchResult");
+            pageBox.innerHTML = "";
             resultEl.innerHTML = "";
             pageBox.style.display = "block";
 
@@ -113,18 +114,16 @@ function KakaoMapEvent({ name }) {
             map.setBounds(bounds);
           }
         });
-      }, 300);
+      }, 200);
       setMarkers([]);
     }
   }, [name])
 
-  // 현재 위치 추적
-  ///////////////////
+  // 위치 기본값
   const [locale, setLocale] = useState({
     center: {
-      // Default : 카카오 본사
-      lat: 33.450701,
-      lng: 126.570667
+      lat: null,
+      lng: null
     },
     errMsg: null,
     isLoading: true,
