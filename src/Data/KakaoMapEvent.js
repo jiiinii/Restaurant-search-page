@@ -13,7 +13,6 @@ function KakaoMapEvent({ name }) {
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
   const [keyword, setKeyword] = useState("");
-  // const [locale, setLocale] = useState({});
 
   const handleChange = (e) => {
     setKeyword(e.target.value);
@@ -128,11 +127,16 @@ function KakaoMapEvent({ name }) {
     errMsg: null,
     isLoading: true,
   });
+  
+  // var mapContainer = document.getElementById('map'),
+  //     mapOption = {
+  //       center: new window.kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+  //       level: 3 // 지도의 확대 레벨
+  //     }
 
-  useEffect(() => {
-    console.log(`locale &&&&&&&&&&`, locale);
-  }, [locale])
-
+  //   var mapProd = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+  //   console.log(`mapProd >>>>>>>>>>`, mapProd);
+    
   function appendResultListItem(list, item, marker) {
     // 결과 리스트
     const resultList = document.createElement("li");
@@ -201,6 +205,7 @@ function KakaoMapEvent({ name }) {
           level={3}
           onCreate={setMap}
         >
+        {/* <Map id="map" onCreate={setMap}></Map> */}
           {markers.map((marker) => (
             <MapMarker
               key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
@@ -221,10 +226,10 @@ function KakaoMapEvent({ name }) {
             </MapMarker>
           ))}
           {!locale.isLoading && (
-            <MapMarker position={locale.center}></MapMarker>
+            <MapMarker position={locale.center}></MapMarker> // 현재 위치 마커 표시
           )}
           <ZoomControl />
-        </Map>
+          </Map>
       </div>
     </>
   );
