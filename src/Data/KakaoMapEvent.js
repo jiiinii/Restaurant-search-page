@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import CreateMarker from "../Components/CreateMarker";
@@ -40,7 +39,18 @@ function KakaoMapEvent({ name }) {
       setKeyword(name);
       setTimeout(() => {
         const places = new window.kakao.maps.services.Places();
-        places.keywordSearch(name, (data, status, pagination) => {
+
+        var mapContainer = document.getElementById("map"), // 지도를 표시할 div
+          mapOption = {
+            center: new window.kakao.maps.LatLng("", ""), // 지도의 중심좌표
+            level: 10, // 지도의 확대 레벨
+          };
+
+        var map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        console.log(`@@@ 1 map.getLevel(); : ${map.getLevel()}`);
+        places.keywordSearch(
+          name,
+          (data, status, pagination) => {
             const pageBox = document.querySelector(".pageBox");
             const resultEl = document.querySelector(".searchResult");
             pageBox.innerHTML = "";
@@ -51,16 +61,20 @@ function KakaoMapEvent({ name }) {
             if (status === window.kakao.maps.services.Status.OK) {
               // WGS84 좌표계에서 사각영역 정보를 표현하는 객체를 생성
               const bounds = new window.kakao.maps.LatLngBounds();
-              // 검색 시 마커 보이기
+              // // 검색 시 마커 보이기
               let localPin = [];
               data.forEach((item) => {
                 const marker = CreateMarker(item);
                 localPin.push(marker);
+
+                const markerPosition = new window.kakao.maps.LatLng(item.y, item.x);
+                new window.kakao.maps.Marker({ map, position: markerPosition });
+                
                 bounds.extend(new window.kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
                 appendResultListItem(resultEl, item, marker);
               });
-              setMarkers(localPin); // 마커 설정
-
+              // setMarkers(localPin); // 마커 설정
+              // console.log(`@@@ 2 map.getLevel(); : ${map.getLevel()}`);
               if (map !== undefined) {
                 console.log(`map >>>>>>>>>>>>>>>`, map);
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정
@@ -68,7 +82,9 @@ function KakaoMapEvent({ name }) {
                 PaginationButton(pagination); // 페이지 버튼 활성
               }
               // 검색어에 대한 정보가 존재하지 않을시
-            } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
+            } else if (
+              status === window.kakao.maps.services.Status.ZERO_RESULT
+            ) {
               pageBox.style.display = "none";
               alert("검색 결과가 존재하지 않습니다.");
               return;
@@ -93,16 +109,16 @@ function KakaoMapEvent({ name }) {
       pageBox.style.display = "none";
       setTimeout(() => {
         const bounds = new window.kakao.maps.LatLngBounds();
+        var mapContainer = document.getElementById("map"), // 지도를 표시할 div
+          mapOption = {
+            center: new window.kakao.maps.LatLng("", ""), // 지도의 중심좌표
+            level: 10, // 지도의 확대 레벨
+          };
+
+        var map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
         navigator.geolocation.getCurrentPosition((position) => {
           console.log(`geolocation 22222222222222222`, position);
-          setLocale((prev) => ({
-            ...prev,
-            center: {
-              lat: position.coords.latitude, // 위도
-              lng: position.coords.longitude // 경도
-            },
-            isLoading: false,
-          }));
+
           bounds.extend(
             new window.kakao.maps.LatLng(
               position.coords.latitude,
@@ -113,30 +129,20 @@ function KakaoMapEvent({ name }) {
             map.setBounds(bounds);
           }
         });
+
+        // MapInit();
+        console.log(`@@@`);
+        var mapContainer = document.getElementById("map"), // 지도를 표시할 div
+          mapOption = {
+            center: new window.kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+            level: 3, // 지도의 확대 레벨
+          };
+
+        var map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
       }, 200);
-      setMarkers([]);
     }
-  }, [name])
+  }, [name]);
 
-  // 위치 기본값
-  const [locale, setLocale] = useState({
-    center: {
-      lat: null,
-      lng: null
-    },
-    errMsg: null,
-    isLoading: true,
-  });
-  
-  // var mapContainer = document.getElementById('map'),
-  //     mapOption = {
-  //       center: new window.kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-  //       level: 3 // 지도의 확대 레벨
-  //     }
-
-  //   var mapProd = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-  //   console.log(`mapProd >>>>>>>>>>`, mapProd);
-    
   function appendResultListItem(list, item, marker) {
     // 결과 리스트
     const resultList = document.createElement("li");
@@ -198,39 +204,7 @@ function KakaoMapEvent({ name }) {
         <SearchResult className="searchResult"></SearchResult>
         <PageBox className="pageBox"></PageBox>
       </Fixation>
-      <div className="myMap">
-        <Map
-          center={locale.center}
-          style={{ width: "758px", height: "650px", borderRadius: "10px" }}
-          level={3}
-          onCreate={setMap}
-        >
-        {/* <Map id="map" onCreate={setMap}></Map> */}
-          {markers.map((marker) => (
-            <MapMarker
-              key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-              position={marker.position}
-              onClick={() => setInfo(marker)}
-            >
-              {info && info.content === marker.content && (
-                <div style={{ color: "#000", textAlign: "center" }}>
-                  <a
-                    target="blank"
-                    href={`${marker.place_url}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    {marker.content}
-                  </a>
-                </div>
-              )}
-            </MapMarker>
-          ))}
-          {!locale.isLoading && (
-            <MapMarker position={locale.center}></MapMarker> // 현재 위치 마커 표시
-          )}
-          <ZoomControl />
-          </Map>
-      </div>
+      <div id="map" style={{ width: "100%", height: "650px" }}></div>
     </>
   );
 }
