@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import CreateMarker from "../Components/CreateMarker";
@@ -8,10 +8,10 @@ import styled from "styled-components";
 
 function KakaoMapEvent({ name }) {
   UseKakaoLoader();
-  const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
-  const [map, setMap] = useState();
   const [keyword, setKeyword] = useState("");
+  let map;
+  let setInfo;
 
   const handleChange = (e) => {
     setKeyword(e.target.value);
@@ -46,11 +46,8 @@ function KakaoMapEvent({ name }) {
             level: 10, // 지도의 확대 레벨
           };
 
-        var map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-        console.log(`@@@ 1 map.getLevel(); : ${map.getLevel()}`);
-        places.keywordSearch(
-          name,
-          (data, status, pagination) => {
+        map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        places.keywordSearch(name, (data, status, pagination) => {
             const pageBox = document.querySelector(".pageBox");
             const resultEl = document.querySelector(".searchResult");
             pageBox.innerHTML = "";
@@ -69,12 +66,12 @@ function KakaoMapEvent({ name }) {
 
                 const markerPosition = new window.kakao.maps.LatLng(item.y, item.x);
                 new window.kakao.maps.Marker({ map, position: markerPosition });
-                
+
                 bounds.extend(new window.kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
                 appendResultListItem(resultEl, item, marker);
               });
-              // setMarkers(localPin); // 마커 설정
-              // console.log(`@@@ 2 map.getLevel(); : ${map.getLevel()}`);
+              setMarkers(localPin); // 마커 설정
+
               if (map !== undefined) {
                 console.log(`map >>>>>>>>>>>>>>>`, map);
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정
@@ -82,9 +79,7 @@ function KakaoMapEvent({ name }) {
                 PaginationButton(pagination); // 페이지 버튼 활성
               }
               // 검색어에 대한 정보가 존재하지 않을시
-            } else if (
-              status === window.kakao.maps.services.Status.ZERO_RESULT
-            ) {
+            } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
               pageBox.style.display = "none";
               alert("검색 결과가 존재하지 않습니다.");
               return;
@@ -114,11 +109,19 @@ function KakaoMapEvent({ name }) {
             center: new window.kakao.maps.LatLng("", ""), // 지도의 중심좌표
             level: 10, // 지도의 확대 레벨
           };
+        map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-        var map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
         navigator.geolocation.getCurrentPosition((position) => {
-          console.log(`geolocation 22222222222222222`, position);
+          var lat = position.coords.latitude, // 위도
+            lon = position.coords.longitude; // 경도
 
+          var locPosition = new window.kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+          message = '<div style="padding:5px;">여기에 계신가요?</div>'; // 인포윈도우에 표시될 내용입니다
+
+          // 마커와 인포윈도우를 표시합니다
+          displayMarker(locPosition, message);
+
+          console.log(`geolocation 22222222222222222`, position);
           bounds.extend(
             new window.kakao.maps.LatLng(
               position.coords.latitude,
@@ -129,19 +132,36 @@ function KakaoMapEvent({ name }) {
             map.setBounds(bounds);
           }
         });
-
-        // MapInit();
         console.log(`@@@`);
-        var mapContainer = document.getElementById("map"), // 지도를 표시할 div
-          mapOption = {
-            center: new window.kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-            level: 3, // 지도의 확대 레벨
-          };
-
-        var map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
       }, 200);
-    }
+    }    
   }, [name]);
+
+  function displayMarker(locPosition, message) {
+
+    // 마커를 생성합니다
+    var marker = new window.kakao.maps.Marker({  
+        map: map, 
+        position: locPosition
+    }); 
+    
+    var iwContent = message, // 인포윈도우에 표시할 내용
+        iwRemoveable = true;
+
+    // 인포윈도우를 생성합니다
+    var infowindow = new window.kakao.maps.InfoWindow({
+        content : iwContent,
+        removable : iwRemoveable
+    });
+    
+    // 인포윈도우를 마커위에 표시합니다 
+    infowindow.open(map, marker);
+    
+    console.log(`locPosition >>>>>>>> `, locPosition);
+    console.log(`locPosition map >>>>>>>> `, map);
+    // 지도 중심좌표를 접속위치로 변경합니다
+    map.setCenter(locPosition);     
+}
 
   function appendResultListItem(list, item, marker) {
     // 결과 리스트
@@ -184,6 +204,7 @@ function KakaoMapEvent({ name }) {
       }),
     }).then((marker) => marker.json());
   }
+
   return (
     <>
       <Fixation>
