@@ -8,10 +8,10 @@ import styled from "styled-components";
 
 function KakaoMapEvent({ name }) {
   UseKakaoLoader();
-  const [markers, setMarkers] = useState([]);
-  const [keyword, setKeyword] = useState("");
+  const [, setInfo] = useState([]); // 마커에 정보 표시 되게끔,,
+  // console.log(`info >>${info}`);
+  const [keyword, setKeyword] = useState(""); 
   let map;
-  let setInfo;
 
   const handleChange = (e) => {
     setKeyword(e.target.value);
@@ -58,22 +58,19 @@ function KakaoMapEvent({ name }) {
             if (status === window.kakao.maps.services.Status.OK) {
               // WGS84 좌표계에서 사각영역 정보를 표현하는 객체를 생성
               const bounds = new window.kakao.maps.LatLngBounds();
-              // // 검색 시 마커 보이기
-              let localPin = [];
+              // 검색 시 마커 보이기
               data.forEach((item) => {
                 const marker = CreateMarker(item);
-                localPin.push(marker);
-
+                console.log(`marker >>>>>>>>>>>>>>>`, marker);
                 const markerPosition = new window.kakao.maps.LatLng(item.y, item.x);
+                console.log(`markerPosition >>>>>>>>>>>>>>>`, markerPosition);
                 new window.kakao.maps.Marker({ map, position: markerPosition });
 
                 bounds.extend(new window.kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
                 appendResultListItem(resultEl, item, marker);
               });
-              setMarkers(localPin); // 마커 설정
 
               if (map !== undefined) {
-                console.log(`map >>>>>>>>>>>>>>>`, map);
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정
                 map.setBounds(bounds);
                 PaginationButton(pagination); // 페이지 버튼 활성
@@ -112,22 +109,22 @@ function KakaoMapEvent({ name }) {
         map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
         navigator.geolocation.getCurrentPosition((position) => {
-          var lat = position.coords.latitude, // 위도
-            lon = position.coords.longitude; // 경도
+          console.log(`geolocation ?????????????????`, position);
+          // var lat = position.coords.latitude, // 위도
+          //     lon = position.coords.longitude; // 경도
 
-          var locPosition = new window.kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-          message = '<div style="padding:5px;">여기에 계신가요?</div>'; // 인포윈도우에 표시될 내용입니다
+          // var locPosition = new window.kakao.maps.LatLng(lat, lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
 
-          // 마커와 인포윈도우를 표시합니다
-          displayMarker(locPosition, message);
+          // 마커를 표시합니다
+          // displayMarker(locPosition);
 
-          console.log(`geolocation 22222222222222222`, position);
           bounds.extend(
             new window.kakao.maps.LatLng(
               position.coords.latitude,
               position.coords.longitude
             )
           );
+
           if (map !== undefined) {
             map.setBounds(bounds);
           }
@@ -137,31 +134,32 @@ function KakaoMapEvent({ name }) {
     }    
   }, [name]);
 
-  function displayMarker(locPosition, message) {
+  // function displayMarker(locPosition) {
+  //   // 마커를 생성합니다
+  //   var localPin = new window.kakao.maps.Marker({
+  //     map: map,
+  //     position: locPosition,
+  //     clickable: false
+  //   });
 
-    // 마커를 생성합니다
-    var marker = new window.kakao.maps.Marker({  
-        map: map, 
-        position: locPosition
-    }); 
-    
-    var iwContent = message, // 인포윈도우에 표시할 내용
-        iwRemoveable = true;
+  //   var iwContent = `<div style="padding:5px;">dddd</div>`, // 인포윈도우에 표시할 내용
+  //       iwRemoveable = true;
 
-    // 인포윈도우를 생성합니다
-    var infowindow = new window.kakao.maps.InfoWindow({
-        content : iwContent,
-        removable : iwRemoveable
-    });
-    
-    // 인포윈도우를 마커위에 표시합니다 
-    infowindow.open(map, marker);
-    
-    console.log(`locPosition >>>>>>>> `, locPosition);
-    console.log(`locPosition map >>>>>>>> `, map);
-    // 지도 중심좌표를 접속위치로 변경합니다
-    map.setCenter(locPosition);     
-}
+  //   // 인포윈도우를 생성합니다
+  //   var infowindow = new window.kakao.maps.InfoWindow({
+  //     content: iwContent,
+  //     removable: iwRemoveable,
+  //   });
+  //   console.log(`infowindow >>>>>>>>>>`, infowindow);
+
+  //   window.kakao.maps.event.addListener(localPin, "click", function () {
+  //     // 마커 위에 인포윈도우를 표시합니다
+  //     console.log(`clickkkkkkkkkkkkkkkkkkkkkkk`);
+  //     infowindow.open(localPin);
+  //   });
+  //   // 지도 중심좌표를 접속위치로 변경합니다
+  //   map.setCenter(locPosition, localPin);
+  // }
 
   function appendResultListItem(list, item, marker) {
     // 결과 리스트
@@ -191,8 +189,9 @@ function KakaoMapEvent({ name }) {
   }
 
   function handleClick(marker, item) {
-    // 클릭시 최근검색 기록에 키워드 추가
+    console.log(`marker >>>>>>>>>>>>>>>`, marker);
     setInfo(marker);
+
     fetch(`http://localhost:5000/api/items`, {
       method: "POST",
       headers: {
