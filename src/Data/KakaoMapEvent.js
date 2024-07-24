@@ -8,8 +8,7 @@ import styled from "styled-components";
 
 function KakaoMapEvent({ name }) {
   UseKakaoLoader();
-  const [, setInfo] = useState([]); // 마커에 정보 표시 되게끔,,
-  // console.log(`info >>${info}`);
+  const [info , setInfo] = useState([]); // 마커에 정보 표시 되게끔,,
   const [keyword, setKeyword] = useState(""); 
   let map;
 
@@ -59,16 +58,15 @@ function KakaoMapEvent({ name }) {
               // WGS84 좌표계에서 사각영역 정보를 표현하는 객체를 생성
               const bounds = new window.kakao.maps.LatLngBounds();
               // 검색 시 마커 보이기
+              // let localPin = [];
               data.forEach((item) => {
                 const marker = CreateMarker(item);
-                console.log(`marker >>>>>>>>>>>>>>>`, marker);
-                const markerPosition = new window.kakao.maps.LatLng(item.y, item.x);
-                console.log(`markerPosition >>>>>>>>>>>>>>>`, markerPosition);
-                new window.kakao.maps.Marker({ map, position: markerPosition });
+                displayMarker(item);
 
                 bounds.extend(new window.kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
                 appendResultListItem(resultEl, item, marker);
               });
+              // setMarkers(localPin); // 마커 설정
 
               if (map !== undefined) {
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정
@@ -110,13 +108,13 @@ function KakaoMapEvent({ name }) {
 
         navigator.geolocation.getCurrentPosition((position) => {
           console.log(`geolocation ?????????????????`, position);
-          // var lat = position.coords.latitude, // 위도
-          //     lon = position.coords.longitude; // 경도
+          var lat = position.coords.latitude, // 위도
+              lon = position.coords.longitude; // 경도
 
-          // var locPosition = new window.kakao.maps.LatLng(lat, lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+          var locPosition = new window.kakao.maps.LatLng(lat, lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
 
           // 마커를 표시합니다
-          // displayMarker(locPosition);
+          geolocMarker(locPosition);
 
           bounds.extend(
             new window.kakao.maps.LatLng(
@@ -134,32 +132,33 @@ function KakaoMapEvent({ name }) {
     }    
   }, [name]);
 
-  // function displayMarker(locPosition) {
-  //   // 마커를 생성합니다
-  //   var localPin = new window.kakao.maps.Marker({
-  //     map: map,
-  //     position: locPosition,
-  //     clickable: false
-  //   });
+  function geolocMarker(locPosition) {
+    // 마커를 생성합니다
+    var currentLoc = new window.kakao.maps.Marker({
+      map: map,
+      position: locPosition,
+    });
+    // 지도 중심좌표를 접속위치로 변경합니다
+    map.setCenter(locPosition, currentLoc);
+  }
 
-  //   var iwContent = `<div style="padding:5px;">dddd</div>`, // 인포윈도우에 표시할 내용
-  //       iwRemoveable = true;
+  function displayMarker(item) {
+    var infowindow = new window.kakao.maps.InfoWindow({ zIndex: 1 });
 
-  //   // 인포윈도우를 생성합니다
-  //   var infowindow = new window.kakao.maps.InfoWindow({
-  //     content: iwContent,
-  //     removable: iwRemoveable,
-  //   });
-  //   console.log(`infowindow >>>>>>>>>>`, infowindow);
+    // 마커를 생성합니다
+    var localPin = new window.kakao.maps.Marker({
+      map: map,
+      position: new window.kakao.maps.LatLng(item.y, item.x),
+    });
 
-  //   window.kakao.maps.event.addListener(localPin, "click", function () {
-  //     // 마커 위에 인포윈도우를 표시합니다
-  //     console.log(`clickkkkkkkkkkkkkkkkkkkkkkk`);
-  //     infowindow.open(localPin);
-  //   });
-  //   // 지도 중심좌표를 접속위치로 변경합니다
-  //   map.setCenter(locPosition, localPin);
-  // }
+    window.kakao.maps.event.addListener(localPin, "click", function () {
+      // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+      infowindow.setContent(
+        '<div style="padding:5px;font-size:12px;">' + item.place_name + "</div>"
+      );
+      infowindow.open(map, localPin);
+    });
+  }
 
   function appendResultListItem(list, item, marker) {
     // 결과 리스트
@@ -189,9 +188,9 @@ function KakaoMapEvent({ name }) {
   }
 
   function handleClick(marker, item) {
-    console.log(`marker >>>>>>>>>>>>>>>`, marker);
-    setInfo(marker);
-
+    setInfo(marker); // 리스트 클릭시 최근기록에 키워드 추가
+    console.log(`info?? >>>>>>>>>>>>>>>`, info === marker.content);
+    console.log(`marker.content >>>>>>>>>>>>>>>`, marker.content);
     fetch(`http://localhost:5000/api/items`, {
       method: "POST",
       headers: {
@@ -225,6 +224,7 @@ function KakaoMapEvent({ name }) {
         <PageBox className="pageBox"></PageBox>
       </Fixation>
       <div id="map" style={{ width: "100%", height: "650px" }}></div>
+      {/* <Map></Map> */}
     </>
   );
 }
