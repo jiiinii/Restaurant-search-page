@@ -38,6 +38,8 @@ function KakaoMapEvent({ name }) {
       setKeyword(name);
       setTimeout(() => {
         const places = new window.kakao.maps.services.Places();
+        var mapFrame = document.getElementById("map");
+        mapFrame.innerHTML = "";
 
         var mapContainer = document.getElementById("map"), // 지도를 표시할 div
           mapOption = {
@@ -49,8 +51,10 @@ function KakaoMapEvent({ name }) {
         places.keywordSearch(name, (data, status, pagination) => {
             const pageBox = document.querySelector(".pageBox");
             const resultEl = document.querySelector(".searchResult");
+            const markerFrame = document.getElementById("map").childNodes[0].childNodes[0].childNodes[5];
             pageBox.innerHTML = "";
             resultEl.innerHTML = "";
+            markerFrame.innerHTML = "";
             pageBox.style.display = "block";
 
             // 지도 API의 마커객체와 그리기 요소를 쉽게 지도 위에 그릴 수 있도록 기능을 제공
@@ -59,6 +63,7 @@ function KakaoMapEvent({ name }) {
               const bounds = new window.kakao.maps.LatLngBounds();
               data.forEach((item) => {
                 const marker = CreateMarker(item);
+                console.log(`marker >>>>>>>>> `, marker);
                 displayMarker(item);
                 bounds.extend(new window.kakao.maps.LatLng(item.y, item.x)); // WGS84 좌표 정보를 가지고 있는 객체를 생성한다.
                 appendResultListItem(resultEl, item, marker);
@@ -139,11 +144,11 @@ function KakaoMapEvent({ name }) {
   function displayMarker(item) {
     var infowindow = new window.kakao.maps.InfoWindow({ zIndex: 1 });
 
-    // 마커를 생성합니다
-    var localPin = new window.kakao.maps.Marker({
+    let localPin = new window.kakao.maps.Marker({
       map: map,
       position: new window.kakao.maps.LatLng(item.y, item.x),
     });
+
     console.log(`localPin %%%%%% ${localPin}`);
 
     window.kakao.maps.event.addListener(localPin, "click", function () {
@@ -152,6 +157,7 @@ function KakaoMapEvent({ name }) {
         '<div style="padding:5px;font-size:12px;">' + item.place_name + "</div>"
       );
       infowindow.open(map, localPin);
+      console.log(`infowindow at marker >>> `, infowindow);
     });
   }
 
