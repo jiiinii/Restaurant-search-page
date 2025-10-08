@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import CreateMarker from "../Components/CreateMarker";
 import PaginationButton from "../Components/PaginationButton";
-import UseKakaoLoader from "./UseKakaoLoader";
+import useKakaoLoader from "./useKakaoLoader";
 import styled from "styled-components";
 
 function KakaoMapEvent({ name }) {
-  UseKakaoLoader();
+  useKakaoLoader();
   var infowindow;
   var markers = [];
   let map;
-  const [keyword, setKeyword] = useState(""); 
+  const [keyword, setKeyword] = useState("");
 
   const handleChange = (e) => {
     setKeyword(e.target.value);
@@ -40,14 +40,16 @@ function KakaoMapEvent({ name }) {
       setTimeout(() => {
         const places = new window.kakao.maps.services.Places();
         var mapContainer = document.getElementById("map"), // 지도를 표시할 div
-        mapOption = {
-          center: new window.kakao.maps.LatLng("", ""), // 지도의 중심좌표
-          level: 10, // 지도의 확대 레벨
-        };
+          mapOption = {
+            center: new window.kakao.maps.LatLng("", ""), // 지도의 중심좌표
+            level: 10, // 지도의 확대 레벨
+          };
         mapContainer.innerHTML = "";
         map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-        places.keywordSearch(name, (data, status, pagination) => {
+        places.keywordSearch(
+          name,
+          (data, status, pagination) => {
             const pageBox = document.querySelector(".pageBox");
             const resultEl = document.querySelector(".searchResult");
             pageBox.innerHTML = "";
@@ -71,7 +73,11 @@ function KakaoMapEvent({ name }) {
                 map.setBounds(bounds);
                 PaginationButton(pagination); // 페이지 버튼 활성
               }
-            } else if (status === (window.kakao.maps.services.Status.ZERO_RESULT || window.kakao.maps.services.Status.ERROR)) {
+            } else if (
+              status ===
+              (window.kakao.maps.services.Status.ZERO_RESULT ||
+                window.kakao.maps.services.Status.ERROR)
+            ) {
               pageBox.style.display = "none";
               alert("검색 결과가 존재하지 않거나 오류가 발생했습니다.");
               return;
@@ -101,7 +107,7 @@ function KakaoMapEvent({ name }) {
 
         navigator.geolocation.getCurrentPosition((position) => {
           var lat = position.coords.latitude, // 위도
-              lng = position.coords.longitude; // 경도
+            lng = position.coords.longitude; // 경도
 
           var locPosition = new window.kakao.maps.LatLng(lat, lng); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
 
@@ -120,9 +126,9 @@ function KakaoMapEvent({ name }) {
           }
         });
       }, 200);
-    }    
+    }
   }, [name]);
-  
+
   function markersReset(markers) {
     for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(null);
@@ -188,7 +194,10 @@ function KakaoMapEvent({ name }) {
     infowindow = new window.kakao.maps.InfoWindow({ zIndex: 1 });
     var localPin = new window.kakao.maps.Marker({
       map: map,
-      position: new window.kakao.maps.LatLng(marker.position.lat, marker.position.lng),
+      position: new window.kakao.maps.LatLng(
+        marker.position.lat,
+        marker.position.lng
+      ),
     });
 
     infowindow.setContent(
